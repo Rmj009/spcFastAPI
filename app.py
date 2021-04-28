@@ -16,7 +16,6 @@ import the others function
 """
 from spcTable import SpcTable
 import os,sys,traceback
-from setting import *
 
 #------------CONFIGURATION--------------
 # print(os.getcwd()) # print the pwd status
@@ -111,4 +110,4 @@ def test():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True, port=5000) #os.getenv('PORT')
+    app.run(host="0.0.0.0", debug=True, port=os.getenv('PORT')) #os.getenv('PORT')

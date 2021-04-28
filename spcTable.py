@@ -4,11 +4,13 @@ from sqlalchemy.orm import sessionmaker, aliased
 from calculator import *
 from nelsonRules import *
 from alchemy_db import *
+from setting import *
 import threading
 import os
 db = SQLAlchemy() # db.init_app(app)
-engine = create_engine('postgresql://postgres:edge9527@localhost:5432/dev_tenant')
-# engine = create_engine(os.getenv('PG_URL'))
+# engine = create_engine('postgresql://postgres:edge9527@localhost:5432/dev_tenant')
+# print(os.getenv('PG_URL'))
+engine = create_engine(os.getenv('PG_URL'))
 
 Session = sessionmaker(bind=engine)
 # create a configured "Session" class
