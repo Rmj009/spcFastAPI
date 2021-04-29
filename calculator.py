@@ -12,7 +12,7 @@ class Calculator:
         try:
             # measurelst = [np.asscalar(i) for i in 
             # measurelst = pd.DataFrame(measurelst)
-            print('/Dataframe:/',datatables.head(),sep='\n')
+            print('/Dataframe:/',datatables.head(),sep=' ')
             goodNum = len(datatables['goodlst']) 
             defectNum = len(datatables['defectlst'])
             rangespec = max(datatables['valuelst']) - min(datatables['valuelst'])
@@ -21,15 +21,17 @@ class Calculator:
             defectRate = defectNum / totalNum
             llim = datatables.iloc[1,3]
             ulim = datatables.iloc[1,4]
-            UCL = (llim+ulim)/2
-            LCL = 0 
             Target = (llim+ulim)/2
+            UCL = (ulim+Target)/2
+            LCL = (Target+llim)/2
+            
             
             arr = datatables['valuelst']
             ngroup = 10 #input() #給使用者指定每組大小
+            # ngroups = datatables.groupby(['stratification']).sum('valuelst')
+            # print('nnnnn',ngroups,sep='\n')
             ppkarr = np.array_split(arr,ngroup)# 將資料分組計算
             sampleStd = [np.mean(i) for i in ppkarr]
-            # print('/////////////',sampleStd)
             sigmaPpk = np.std(sampleStd)
            
             cp_mean = np.mean(datatables['valuelst'])
@@ -44,9 +46,10 @@ class Calculator:
             Ppk = np.min([Ppu,Ppl])
 
             CPR = goodNum,totalNum,goodRate,ulim,llim,UCL,LCL,cp_mean, Target,rangespec, Cpu, Cpl, Cp, Ck, Cpk, Ppk, # capability ratio
-            keys = ["good","totalNum","goodRate","USL","LSL","UCL","LCL","xbar","Target","range","Cpu","Cpl","Cp","Ck","Cpk","Ppk"]
+            keys = ["good","totalNum","goodRate","USL","LSL","UCL","LCL","overallmean","target","range","Cpu","Cpl","Cp","Ck","Cpk","Ppk"]
             capability = dict(zip(keys, CPR))
-            print(capability)
+            ### Reference :https://en.wikipedia.org/wiki/Process_performance_index
+            # print(capability)
             return capability # total 17
         except ZeroDivisionError() as e:
             print('sigma zero result from variance: '+ str(e))

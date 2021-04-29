@@ -44,11 +44,12 @@ class SpcTable:
         defectlst = [item[2] for item in tables]
         lsllst = [item[3] for item in tables]
         usllst = [item[4] for item in tables]
+        stratification = [item[5] for item in tables]
         
-        CapabilityColumn = ["valuelst","goodlst","defectlst","lsllst","usllst"]
-        measurelst = [valuelst,goodlst,defectlst,lsllst,usllst]
+        CapabilityColumn = ["valuelst","goodlst","defectlst","lsllst","usllst","stratification"]
+        measurelst = [valuelst,goodlst,defectlst,lsllst,usllst,stratification]
         datatables = pd.DataFrame(dict(zip(CapabilityColumn, measurelst)))
-        print(datatables)
+        # print(datatables)
         return datatables 
 
     def drawchart1(datapoints):
@@ -96,21 +97,20 @@ class SpcTable:
         table_work_order = aliased(work_order_op_history) # operation_uuid <=> table_config
         try:
             table_history.work_order_op_history_uuid = wooh_uuid
-            j1 = session.query(table_history.value,table_work_order.good,table_work_order.defect,table_config.lsl,table_config.usl)\
+            j1 = session.query(table_history.value,table_work_order.good,table_work_order.defect,table_config.lsl,table_config.usl,table_history.measure_object_id)\
             .join(table_config, table_history.spc_measure_point_config_uuid == table_config.uuid)\
             .join(table_work_order, table_work_order.uuid == table_history.work_order_op_history_uuid)\
-            .where((table_work_order.start_time > startTime) & (table_work_order.end_time < endTime) & (table_history.spc_measure_point_config_uuid == smpc_uuid))
+            .where((table_work_order.start_time > startTime) & (table_work_order.end_time < endTime) & (table_history.spc_measure_point_config_uuid == smpc_uuid))\
+            .order_by(table_history.measure_object_id.asc())
             ### orderby table_history.work_order_op_history_uuid 
-            ### orderby asc table_history.measure_object_id
             if (table_history.work_order_op_history_uuid != None) :
                 yy = j1.filter(table_history.work_order_op_history_uuid == wooh_uuid)
+            
             queryResult = [row for row in session.execute(yy)]
             datatables  = SpcTable.dataPipline(tables=queryResult)
             # t = threading.Thread(target = apply_rules, args=(qResult['valuelst'],'all',2) ,daemon=True);t.start()
-            # print("qqqqqqqqqqqqqq",qResult['valuelst'])
             # SpcTable.drawchart2(datapoints = qResult['valuelst'])
             resultCapablity = Calculator.calc(datatables=datatables)
-            # print('resultCCCC:',resultCapablity)
             return resultCapablity
 
         except Exception as e:

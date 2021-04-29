@@ -76,7 +76,7 @@ def index():
       print("body_json: ", body_json)   
     return 'ok'
 
-@app.route("/capability", methods=['GET'])
+@app.route("/v1/capability", methods=['GET'])
 def capability():
     # query params
     b = request.args.get('startTime') # sync to cloud
