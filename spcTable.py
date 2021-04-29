@@ -40,17 +40,16 @@ class SpcTable:
     # self.lastvar = endTime
     def dataPipline(tables):
         valuelst = [item[0] for item in tables]
-        # print("vvvv:", valuelst)
         goodlst = [item[1] for item in tables]
         defectlst = [item[2] for item in tables]
-        lslspec = [item[3] for item in tables][0]
-        print("####lslspec###", lslspec)
-        uslspec = [item[4] for item in tables][0]
-        # CapabilityColumn = ["valuelst","goodlst","defectlst","lslspec","uslspec"]
-        # measurelst = [valuelst,goodlst,defectlst,lslspec,uslspec]
-        # Result = pd.DataFrame(dict(zip(CapabilityColumn, measurelst)))
-        qResult = {"valuelst":valuelst,"goodlst":goodlst ,"defectlst":defectlst ,"lslspec": lslspec,"uslspec": uslspec}
-        return qResult
+        lsllst = [item[3] for item in tables]
+        usllst = [item[4] for item in tables]
+        
+        CapabilityColumn = ["valuelst","goodlst","defectlst","lsllst","usllst"]
+        measurelst = [valuelst,goodlst,defectlst,lsllst,usllst]
+        datatables = pd.DataFrame(dict(zip(CapabilityColumn, measurelst)))
+        print(datatables)
+        return datatables 
 
     def drawchart1(datapoints):
         #---------invoke western------------
@@ -89,7 +88,6 @@ class SpcTable:
 
 
     def drawchart2(datapoints):
-        # apply_rules(dataPipline(tables = )
         pass
     # start_time,end_time,work_order_op_history_uuid,spc_measure_point_config_uuid
     def queryfunc(startTime,endTime,wooh_uuid,smpc_uuid): 
@@ -107,11 +105,11 @@ class SpcTable:
             if (table_history.work_order_op_history_uuid != None) :
                 yy = j1.filter(table_history.work_order_op_history_uuid == wooh_uuid)
             queryResult = [row for row in session.execute(yy)]
-            qResult = SpcTable.dataPipline(tables=queryResult)
+            datatables  = SpcTable.dataPipline(tables=queryResult)
             # t = threading.Thread(target = apply_rules, args=(qResult['valuelst'],'all',2) ,daemon=True);t.start()
             # print("qqqqqqqqqqqqqq",qResult['valuelst'])
             # SpcTable.drawchart2(datapoints = qResult['valuelst'])
-            resultCapablity = Calculator.calc(mylst = qResult)
+            resultCapablity = Calculator.calc(datatables=datatables)
             # print('resultCCCC:',resultCapablity)
             return resultCapablity
 
@@ -124,26 +122,3 @@ class SpcTable:
     # QQ = session.query(table_history.value,table_config).join(table_history, table_history.spc_measure_point_config_uuid == table_config.uuid).filter(table_history.spc_measure_point_config_uuid == '57016b97-2355-460f-b673-6512d8ed00da')
     # print(QQ)
     # sql轉譯
-
-
-
-# if __name__ == "__main__":
-
-# #     db = SQLAlchemy()
-# #     app = Flask(__name__, static_url_path='')   # app = flask.Flask(__name__) # coz, import style >>> import flask
-# #     app.config["DEBUG"] = True
-# #     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# #     app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:edge9527@localhost:5432/dev_tenant"
-# #     engine = create_engine('postgresql://postgres:edge9527@localhost:5432/dev_tenant')
-# #     Session = sessionmaker(bind=engine)
-# #     # create a configured "Session" class
-# #     session = Session() # create a Session
-# #     connection = engine.connect()
-# #     db.init_app(app)
-#     print("###open###1111")
-#     b = '2020-09-02T07:41:03Z'
-#     e = '2021-01-15T10:47:32Z'
-#     wuuid = 'd5473fb7-42ac-4794-bf4d-358f4ddccd1c'
-#     suuid = '69636a46-48cb-4a99-976e-5ecc024c1332'
-#     resultCapablity = SpcTable.queryfunc(startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
-#     print(resultCapablity)
