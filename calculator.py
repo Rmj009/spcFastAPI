@@ -36,6 +36,7 @@ class Calculator:
            
             cp_mean = np.mean(datatables['valuelst'])
             sigmaCpk = np.std(datatables['valuelst'])
+            assert sigmaCpk != 0
             Cp = float(rangespec) / (sigmaCpk*6) 
             Ck = float(cp_mean - UCL)/ Target / 2
             Cpu = float(ulim - cp_mean) / (sigmaCpk*3)
