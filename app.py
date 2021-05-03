@@ -86,10 +86,13 @@ def capability():
     # print('ssssssssss',[b,e,wuuid,suuid])
     if (suuid == None) or (len(suuid) == 0):
       result = 'config point error'
+      return result, 400
     elif (b == None) or (len(b) == 0):
       result = 'start time error'
+      return result, 400
     elif (e == None) or (len(e) == 0):
       result = 'end time error'
+      return result, 400
     else: #(b or e or wuuid or suuid != None) or (len(b) or len(e) or len(wuuid) or len(suuid) != 0)
       result = SpcTable.queryfunc(startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
     
