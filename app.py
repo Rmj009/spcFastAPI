@@ -83,10 +83,17 @@ def capability():
     e = request.args.get('endTime') 
     wuuid = request.args.get('workOrderOpHistoryUUID')
     suuid = request.args.get('spcMeasurePointConfigUUID')
-    resultCapablity = SpcTable.queryfunc(startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
-    # print("Capablity result: ", resultCapablity)
-    return resultCapablity
-
+    # print('ssssssssss',[b,e,wuuid,suuid])
+    if (suuid == None) or (len(suuid) == 0):
+      result = 'config point error'
+    elif (b == None) or (len(b) == 0):
+      result = 'start time error'
+    elif (e == None) or (len(e) == 0):
+      result = 'end time error'
+    else: #(b or e or wuuid or suuid != None) or (len(b) or len(e) or len(wuuid) or len(suuid) != 0)
+      result = SpcTable.queryfunc(startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
+    
+    return result
 
 #-----------------ENTRANCE-----------------------
 @app.route('/', methods=['GET'])

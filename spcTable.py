@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, abort, url_for, json, jsonify, escape
-from sqlalchemy import select, column, join, create_engine
+from sqlalchemy import select, column, join, create_engine,exc
 from sqlalchemy.orm import sessionmaker, aliased
+from sqlalchemy.exc import DatabaseError
 from calculator import *
 from nelsonRules import *
 from alchemy_db import *
@@ -49,7 +50,6 @@ class SpcTable:
         CapabilityColumn = ["valuelst","goodlst","defectlst","lsllst","usllst","stratification"]
         measurelst = [valuelst,goodlst,defectlst,lsllst,usllst,stratification]
         datatables = pd.DataFrame(dict(zip(CapabilityColumn, measurelst)))
-        # print(datatables)
         return datatables 
 
     def drawchart1(datapoints):
@@ -96,29 +96,33 @@ class SpcTable:
         table_history = aliased(spc_measure_point_history) # work_order_op_history_uuid <=> table_work_order.uuid
         table_work_order = aliased(work_order_op_history) # operation_uuid <=> table_config
         try:
-            table_history.work_order_op_history_uuid = wooh_uuid
+            # table_history.work_order_op_history_uuid = wooh_uuid
             j1 = session.query(table_history.value,table_work_order.good,table_work_order.defect,table_config.lsl,table_config.usl,table_history.measure_object_id)\
             .join(table_config, table_history.spc_measure_point_config_uuid == table_config.uuid)\
             .join(table_work_order, table_work_order.uuid == table_history.work_order_op_history_uuid)\
             .where((table_work_order.start_time > startTime) & (table_work_order.end_time < endTime) & (table_history.spc_measure_point_config_uuid == smpc_uuid))\
             .order_by(table_history.measure_object_id.asc())
-            ### orderby table_history.work_order_op_history_uuid 
-            if (table_history.work_order_op_history_uuid != None) :
+            ### orderby table_history.work_order_op_history_uuid
+            if (wooh_uuid == None):
+                queryResult = [row for row in session.execute(j1)]
+            elif (len(wooh_uuid) == 0):
+                queryResult = [row for row in session.execute(j1)]
+            else:
                 yy = j1.filter(table_history.work_order_op_history_uuid == wooh_uuid)
-            
-            queryResult = [row for row in session.execute(yy)]
+                queryResult = [row for row in session.execute(yy)]
             datatables  = SpcTable.dataPipline(tables=queryResult)
             # t = threading.Thread(target = apply_rules, args=(qResult['valuelst'],'all',2) ,daemon=True);t.start()
             # SpcTable.drawchart2(datapoints = qResult['valuelst'])
             resultCapablity = Calculator.calc(datatables=datatables)
             return resultCapablity
 
-        except Exception as e:
-                print("error type: ",type(e),str(e))
-                raise
-        
+        except exc.SQLAlchemyError as e:
+                print("eeeeeeeeeeeerror type: ",type(e),str(e))
+                # raise None
+        except DatabaseError:
+            db.session.rollback()
+            handle_sqlalchemy_database_error()
+    
+    def CPRresult(object):
+        pass
   
-  
-    # QQ = session.query(table_history.value,table_config).join(table_history, table_history.spc_measure_point_config_uuid == table_config.uuid).filter(table_history.spc_measure_point_config_uuid == '57016b97-2355-460f-b673-6512d8ed00da')
-    # print(QQ)
-    # sql轉譯
