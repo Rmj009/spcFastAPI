@@ -3,53 +3,66 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import statistics as stat
-class Calculator:
+
+"""
+References: 
+Douglas C. Montgomery-Introduction to statistical quality control 7th edtition-Wiley (2009)
+Part III chapter 8.3, p362.-p372
+"""
+class Calculator(object):
     def __init__(self,mean,variance,sojourn):
         self.mean = mean
         self.variance = variance
         self.sojourn = sojourn
+    def __del__(self,object):  #1>>> cleanup the seq, 2>>> return the seq after drop point(s)
+        print('drop points...')
+        dropindex = np.argwhere(max(object) or min(object))
+        sequences = np.delete(object,object[1]) #specific points
+        return sequences
+
     def calc(datatables):
         try:
-            # measurelst = [np.asscalar(i) for i in 
-            # measurelst = pd.DataFrame(measurelst)
-            print('/Dataframe:/',datatables.head(),sep=' ')
+            # datatables = np.delete(datatables['valuelst'],np.argwhere(datatables['valuelst'] == 9) )
+            datatables = datatables[datatables.valuelst != -88888888]
+            print('/Dataframe:/',datatables.shape,datatables.head(),sep='\n')
             goodNum = len(datatables['goodlst']) 
             defectNum = len(datatables['defectlst'])
-            rangespec = max(datatables['valuelst']) - min(datatables['valuelst'])
             totalNum = goodNum + defectNum
             goodRate = goodNum / totalNum 
             defectRate = defectNum / totalNum
-            llim = datatables.iloc[1,3]
-            ulim = datatables.iloc[1,4]
-            Target = (llim+ulim)/2
-            UCL = (ulim+Target)/2
-            LCL = (Target+llim)/2
-            
-            
+            Target = datatables.iloc[1,7]
+            USL = (datatables.iloc[1,4] + Target)
+            LSL = (Target - datatables.iloc[1,3])
+            LCL = (LSL + Target)/2
+            UCL = (USL + Target)/2
+            rangespec = USL - LSL
+
             arr = datatables['valuelst']
-            ngroup = 10 #input() #給使用者指定每組大小
-            # ngroups = datatables.groupby(['stratification']).sum('valuelst')
+            ngroup = 5 #input() #給使用者指定每組大小
+            # ngroups = datatables.groupby(['stratum']).sum('valuelst')
             # print('nnnnn',ngroups,sep='\n')
             ppkarr = np.array_split(arr,ngroup)# 將資料分組計算
             sampleStd = [np.mean(i) for i in ppkarr]
-            sigmaPpk = np.std(sampleStd)
+            sigmaCpk = np.std(sampleStd,ddof=1) #pd.std()
            
             cp_mean = np.mean(datatables['valuelst'])
-            sigmaCpk = np.std(datatables['valuelst'])
-            assert sigmaCpk != 0
-            Cp = float(rangespec) / (sigmaCpk*6) 
-            Ck = float(cp_mean - UCL)/ Target / 2
-            Cpu = float(ulim - cp_mean) / (sigmaCpk*3)
-            Cpl = float(cp_mean - llim) / (sigmaCpk*3)
-            Cpk = np.min([Cpu,Cpl])
-            Ppu = float(ulim - cp_mean) / (sigmaPpk*3)
-            Ppl = float(cp_mean - llim) / (sigmaPpk*3)
-            Ppk = np.min([Ppu,Ppl])
+            sigmaPpk = np.std(datatables['valuelst'],ddof=1)
+            assert sigmaPpk != 0
+            Cp = (rangespec) / (sigmaCpk*6) 
+            Ck = (cp_mean - UCL)/ Target / 2
+            Cpu = (USL - cp_mean) / (sigmaCpk*3)
+            Cpl = (cp_mean - LSL) / (sigmaCpk*3)
+            Cpk = np.min([Cpu,Cpl]) 
+            # Cpk = abs((1-Ck)*Cp)
+            Ppu = (UCL - cp_mean) / (sigmaPpk*3)
+            Ppl = (cp_mean - LCL) / (sigmaPpk*3)
+            Ppk = np.min([Ppu,Ppl]) 
 
-            CPR = goodNum,totalNum,goodRate,ulim,llim,UCL,LCL,cp_mean, Target,rangespec, Cpu, Cpl, Cp, Ck, Cpk, Ppk, # capability ratio
+            CPR = goodNum,totalNum,goodRate,USL,LSL,UCL,LCL,cp_mean, Target,rangespec, Cpu, Cpl, Cp, Ck, Cpk, Ppk, # capability ratio
             keys = ["good","totalNum","goodRate","USL","LSL","UCL","LCL","overallmean","target","range","Cpu","Cpl","Cp","Ck","Cpk","Ppk"]
             capability = dict(zip(keys, CPR))
             ### Reference :https://en.wikipedia.org/wiki/Process_performance_index
+
             # print(capability)
             return capability # total 17
         except ZeroDivisionError() as e:
