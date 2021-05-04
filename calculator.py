@@ -44,10 +44,12 @@ class Calculator(object):
             ppkarr = np.array_split(arr,ngroup)# 將資料分組計算
             sampleStd = [np.mean(i) for i in ppkarr]
             sigmaCpk = np.std(sampleStd,ddof=1) #pd.std()
-           
             cp_mean = np.mean(datatables['valuelst'])
             sigmaPpk = np.std(datatables['valuelst'],ddof=1)
+            if (sigmaCpk == 0) or (sigmaPpk == 0):
+                raise Exception('unreasonable anomaly') 
             assert sigmaPpk != 0
+            assert sigmaCpk != 0
             Cp = (rangespec) / (sigmaCpk*6) 
             Ck = (cp_mean - UCL)/ Target / 2
             Cpu = (USL - cp_mean) / (sigmaCpk*3)
