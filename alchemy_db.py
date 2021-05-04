@@ -6,7 +6,7 @@ db = SQLAlchemy()
 class spc_measure_point_config(db.Model): #Sojourn 1
     __tablename__='spc_measure_point_config'
     uuid = db.Column(
-        db.String(30),unique = True,  primary_key = True, nullable = False)
+        db.String(32),unique = True,  primary_key = True, nullable = False)
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(
         db.DateTime, onupdate=datetime.now, default=datetime.now)
@@ -60,7 +60,7 @@ class spc_measure_point_config(db.Model): #Sojourn 1
 class spc_measure_point_history(db.Model): #Sojourn 2
     __tablename__='spc_measure_point_history'
     uuid = db.Column(
-        db.String(30),unique = True,  primary_key = True, nullable = False)
+        db.String(32),unique = True,  primary_key = True, nullable = False)
     work_order_op_history_uuid = db.Column(
         db.String(50), unique=False, nullable=False)
     tenant_id = db.Column(
@@ -92,13 +92,13 @@ class spc_measure_point_history(db.Model): #Sojourn 2
 class work_order_op_history(db.Model): #Sojourn 3
     __tablename__='work_order_op_history'
     uuid = db.Column(
-        db.String(30),unique = True,  primary_key = True, nullable = False)
+        db.String(32),unique = True,  primary_key = True, nullable = False)
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(
         db.DateTime, onupdate=datetime.now, default=datetime.now)
     work_order_id = db.Column(
-        db.String(30), unique=False, nullable=False)
-    shift = db.Column(db.Float, nullable=False)
+        db.String(32), unique=False, nullable=False)
+    shift = db.Column(db.Integer, nullable=False)
     start_time = db.Column(db.DateTime, default=datetime.now)
     end_time = db.Column(
         db.DateTime, onupdate=datetime.now, default=datetime.now)
@@ -115,13 +115,28 @@ class work_order_op_history(db.Model): #Sojourn 3
     defect = db.Column(db.Float, nullable=False)
     std_tp = db.Column(db.Float, nullable=False)
     std_ts = db.Column(db.Float, nullable=False)
-
+    std_work_time = db.Column(db.Float, nullable=False)
+    act_work_time = db.Column(db.Float, nullable=False)
+    worker_id = db.Column(db.Integer, nullable=False)
+    worker_name = db.Column(db.String(32), nullable=False)
+    progress = db.Column(db.Integer, nullable=False)
+    defect_reason = db.Column(
+        db.String(255), nullable=False)
+    op_code = db.Column(db.Integer, nullable=False)
     worker_uuid = db.Column(
-        db.String(30), unique=False, nullable=False)
+        db.String(32), unique=False, nullable=False)
     work_order_uuid = db.Column(
-        db.String(30), unique=False, nullable=False)
+        db.String(32), unique=False, nullable=False)
     operation_uuid = db.Column(
-        db.String(30), unique=False, nullable=False)
+        db.String(32), unique=False, nullable=False)
+    tenant_id = db.Column(
+        db.String(32), unique=False, nullable=False)
+    device_uuid = db.Column(
+        db.String(32), unique=False, nullable=False)
+    status = db.Column(db.Integer, nullable=False)
+    op_name = db.Column(db.Integer, nullable=False)
+    
+    
     def __init__(self,uuid,create_time,update_time,work_order_id,start_time,end_time,producer_number,producer_name,qty,description,device_name,good,defect,std_tp,std_ts,std_work_time,operation_uuid):
         self.uuid = uuid
         self.create_time = create_time
@@ -140,7 +155,17 @@ class work_order_op_history(db.Model): #Sojourn 3
         self.std_tp = std_tp
         self.std_ts = std_ts
         self.std_work_time = std_work_time
+        self.act_work_time = act_work_time
+        self.worker_id = worker_id
+        self.worker_name = worker_name
+        self.progress = progress
+        self.defect_reason = defect_reason
+        self.op_code = op_code
         self.worker_uuid = worker_uuid
         self.work_order_uuid = work_order_uuid
         self.operation_uuid = operation_uuid
+        self.tenant_id = tenant_id
+        self.device_uuid = device_uuid
+        self.status = status
+        self.op_name = op_name
 
