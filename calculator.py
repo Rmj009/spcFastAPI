@@ -37,20 +37,18 @@ class Calculator(object):
             UCL = (USL + Target)/2
             rangespec = USL - LSL
             arr = datatables['valuelst']
-            print('arrrrrrr',type(arr))
             ngroup = int(datatables.shape[0])/int(datatables.amount[1])
-            if (ngroup.is_integer() == True):
-                # for i in arr:
-                #     print(i)
-                # for i in range(len(arr)):
-                #     # arr[i] = arr[]
+            if (ngroup.is_integer() == False):
                 cpkarr = np.array_split(arr,ngroup)
-
-                # cpkarr = cpkarr[-1]
-                sampleStd = [np.mean(i) for i in cpkarr]
-                sigmaCpk = np.std(sampleStd,ddof=1) #pd.std()
+                arrFront = [np.mean(i) for i in cpkarr[:-2]]
+                mergerest = np.concatenate((cpkarr[-2],cpkarr[-1]), axis = None)
+                arrBack = [np.mean(i) for i in mergerest]
+                arrmean = arrFront.append(arrBack)
+                # print('a///////////',[cpkarr,arrBack,arrmean])
+                sigmaCpk = np.std(arrmean,ddof=1) #pd.std()
             else:
-                pass
+                cpkarr = np.array_split(arr,ngroup)
+                sigmaCpk = np.std(cpkarr,ddof=1)
             cp_mean = np.mean(datatables['valuelst'])
             sigmaPpk = np.std(datatables['valuelst'],ddof=1)
             if (sigmaCpk == 0) or (sigmaPpk == 0):
