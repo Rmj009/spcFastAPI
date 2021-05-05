@@ -26,7 +26,7 @@ class Calculator(object):
             datatables = datatables[datatables.valuelst != -88888888]
             print('/Dataframe:/',datatables.shape,datatables.head(),sep='\n')
             goodNum = len(datatables['goodlst']) 
-            defectNum = len(datatables['defectlst'])
+            defectNum = len(datatables[datatables.defectlst > 0])
             totalNum = goodNum + defectNum
             goodRate = goodNum / totalNum 
             defectRate = defectNum / totalNum
@@ -36,22 +36,30 @@ class Calculator(object):
             LCL = (LSL + Target)/2
             UCL = (USL + Target)/2
             rangespec = USL - LSL
-
             arr = datatables['valuelst']
-            ngroup = 5 #input() #給使用者指定每組大小
-            # ngroups = datatables.groupby(['stratum']).sum('valuelst')
-            # print('nnnnn',ngroups,sep='\n')
-            ppkarr = np.array_split(arr,ngroup)# 將資料分組計算
-            sampleStd = [np.mean(i) for i in ppkarr]
-            sigmaCpk = np.std(sampleStd,ddof=1) #pd.std()
+            print('arrrrrrr',type(arr))
+            ngroup = int(datatables.shape[0])/int(datatables.amount[1])
+            if (ngroup.is_integer() == True):
+                # for i in arr:
+                #     print(i)
+                # for i in range(len(arr)):
+                #     # arr[i] = arr[]
+                cpkarr = np.array_split(arr,ngroup)
+
+                # cpkarr = cpkarr[-1]
+                sampleStd = [np.mean(i) for i in cpkarr]
+                sigmaCpk = np.std(sampleStd,ddof=1) #pd.std()
+            else:
+                pass
             cp_mean = np.mean(datatables['valuelst'])
             sigmaPpk = np.std(datatables['valuelst'],ddof=1)
             if (sigmaCpk == 0) or (sigmaPpk == 0):
                 raise Exception('unreasonable anomaly') 
             assert sigmaPpk != 0
             assert sigmaCpk != 0
+            print('///////',[sigmaCpk,sigmaPpk])
             Cp = (rangespec) / (sigmaCpk*6) 
-            Ck = (cp_mean - UCL)/ Target / 2
+            Ck = abs((Target - cp_mean)/ (rangespec / 2))
             Cpu = (USL - cp_mean) / (sigmaCpk*3)
             Cpl = (cp_mean - LSL) / (sigmaCpk*3)
             Cpk = np.min([Cpu,Cpl]) 
