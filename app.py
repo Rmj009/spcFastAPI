@@ -1,9 +1,9 @@
 # export DATABASE_URL='postgres://localhost:5432/
 from datetime import datetime
-import os
+import os,html
 from flask import Flask, request, render_template, abort, url_for, redirect, json, jsonify, escape
 from flask_cors import CORS
-import html #json
+# from flask_jsonpify import jsonpify
 app = Flask(__name__, static_url_path='')
 cors = CORS(app, resources={r"/capability/*"})
 
@@ -43,7 +43,7 @@ class PassGateway():
     # return 500 code
     abort(500, errMsg)
 #----------------GET-------------------
-@app.route('/query', methods=['GET'])
+@app.route('/front', methods=['GET'])
 def index():
   if request.method == "GET":
     b = request.args.get('startTime') # sync to cloud
@@ -78,25 +78,44 @@ def index():
 
 @app.route("/v1/capability", methods=['GET'])
 def capability():
-    # query params
-    b = request.args.get('startTime') # sync to cloud
-    e = request.args.get('endTime') 
-    wuuid = request.args.get('workOrderOpHistoryUUID')
-    suuid = request.args.get('spcMeasurePointConfigUUID')
-    # print('ssssssssss',[b,e,wuuid,suuid])
-    if (suuid == None) or (len(suuid) == 0):
-      result = 'config point error'
-      return result, 400
-    elif (b == None) or (len(b) == 0):
-      result = 'start time error'
-      return result, 400
-    elif (e == None) or (len(e) == 0):
-      result = 'end time error'
-      return result, 400
-    else: #(b or e or wuuid or suuid != None) or (len(b) or len(e) or len(wuuid) or len(suuid) != 0)
-      result = SpcTable.queryfunc(startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
-    
-    return result
+  # query params
+  b = request.args.get('startTime') # sync to cloud
+  e = request.args.get('endTime') 
+  wuuid = request.args.get('workOrderOpHistoryUUID')
+  suuid = request.args.get('spcMeasurePointConfigUUID')
+  if (suuid == None) or (len(suuid) == 0):
+    result = 'config point error'
+    return result, 400
+  elif (b == None) or (len(b) == 0):
+    result = 'start time error'
+    return result, 400
+  elif (e == None) or (len(e) == 0):
+    result = 'end time error'
+    return result, 400
+  else:
+    result = SpcTable.CPRfunc(b=b, e=e, wuuid=wuuid, suuid=suuid)# (startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
+    return result, 200
+
+
+@app.route("/v1/nelson", methods=['GET'])
+def nelson():
+  b = request.args.get('startTime') # sync to cloud
+  e = request.args.get('endTime') 
+  wuuid = request.args.get('workOrderOpHistoryUUID')
+  suuid = request.args.get('spcMeasurePointConfigUUID')
+  if (suuid == None) or (len(suuid) == 0):
+    result = 'config point error'
+    return result, 400
+  elif (b == None) or (len(b) == 0):
+    result = 'start time error'
+    return result, 400
+  elif (e == None) or (len(e) == 0):
+    result = 'end time error'
+    return result, 400
+  else:
+    result = SpcTable.NelsonDraw(b=b, e=e, wuuid=wuuid, suuid=suuid)
+    return result, 200
+
 
 #-----------------ENTRANCE-----------------------
 @app.route('/', methods=['GET'])

@@ -1,8 +1,14 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-# df = pd.read_csv('workbook_name.csv', sep=',',header=0); nmp = df.to_numpy() ;data = nmp[:,11]#; data = pd.DataFrame(nmp[:,11])
+df = pd.read_csv('workbook_name.csv', sep=',',header=0); nmp = df.to_numpy() ;data = nmp[:,11]#; data = pd.DataFrame(nmp[:,11])
 # data = spcTable.data
+"""
+REFERENCE:
+Douglas C. Montgomery-Introduction to statistical quality control 7th edtition-Wiley (2009)
+Part III chapter 5.3, p205.
+"""
+
 def _sliding_chunker(original, segment_len, slide_len):
     """Split a list into a series of sub-lists...
 
@@ -20,6 +26,7 @@ def _sliding_chunker(original, segment_len, slide_len):
         if len(chunk) != segment_len:
             continue
         chunks.append(chunk)
+    # print('cccccccccccccc',chunks)
     return chunks
 
 
@@ -35,43 +42,11 @@ def _clean_chunks(original, modified, segment_len):
         if results[i] == True:
             for d in range(segment_len):
                 results[i+d] = True
-
     return results
 
-
-
-def control_chart(original):
-    """Plot control chart"""
-    text_offset = 70
-    mean = np.mean(original)
-    print("###",mean)
-    sigma = np.std(original)
-    print("###",sigma)
-    # plot original
-    fig = plt.figure(figsize=(20, 10))
-    ax1 = fig.add_subplot(1, 1, 1)
-    ax1.plot(original, color='blue', linewidth=1.5)
-
-    # plot mean
-    ax1.axhline(mean, color='r', linestyle='--', alpha=0.5)
-    ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),
-                 xytext=(text_offset, 0), fontsize=18)
-
-    # plot 1-3 standard deviations
-    sigma_range = np.arange(1,4)
-    for i in range(len(sigma_range)):
-        ax1.axhline(mean + (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
-        ax1.axhline(mean - (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
-        ax1.annotate('%s $\sigma$' % sigma_range[i], xy=(len(original), mean + (sigma_range[i] * sigma)),
-                     textcoords=('offset points'),
-                     xytext=(text_offset, 0), fontsize=18)
-        ax1.annotate('-%s $\sigma$' % sigma_range[i],
-                     xy=(len(original), mean - (sigma_range[i] * sigma)),
-                     textcoords=('offset points'),
-                     xytext=(text_offset, 0), fontsize=18)
-    plt.show()
-    return fig
-
+# markuPoints = []
+# print('markuPoints',markuPoints)
+# print('mmmm',markuPoints[:2])
 # control_chart(original=data)
 
 def plot_rules(data, chart_type=2):
@@ -85,7 +60,7 @@ def plot_rules(data, chart_type=2):
         axs = axs.ravel()
         for i in range(len(columns)):
            axs[i].plot(data.iloc[:, 0])
-           axs[i].plot(data.iloc[:, 0][(data.iloc[:, i+1] == True)], 'ro')
+           axs[i].plot(data.iloc[:, 0][(data.iloc[:, i+1] == True)], 'x')
            axs[i].set_title(columns[i])
 
         return fig
@@ -94,6 +69,7 @@ def plot_rules(data, chart_type=2):
         # plot_num = len(data.columns[1:])
         fig = plt.figure(figsize=(20, 10))
         axs = fig.add_subplot(111)
+        
         axs.plot(data.iloc[:, 0])
 
         marker = ['H', '+', '.', 'o', '*', '<', '>', '^']
@@ -103,7 +79,8 @@ def plot_rules(data, chart_type=2):
             axs.plot(data.iloc[:, 0][(data.iloc[:, i+1] == True)], ls='', marker=marker[i], markersize=20, label=columns[i])
 
         plt.legend()
-        plt.show()
+        # plt.show()
+        plt.savefig('static/Nelson.png')
 
         return fig
 
@@ -117,10 +94,10 @@ def apply_rules(original, rules='all', chart_type=2):
     df = pd.DataFrame(original)
     for i in range(len(rules)):
         df[rules[i].__name__] = rules[i](original= original, mean = data_mean, sigma = data_sig)
+    # print('dddfdfdf',df)
+    # fig = plot_rules(df, chart_type)
 
-    fig = plot_rules(df, chart_type)
-
-    return df, fig
+    return df #, fig
 
 
 def rule1(original, mean, sigma):
@@ -319,7 +296,7 @@ def rule7(original, mean, sigma): #temporary off
     results = []
     for i in range(len(chunks)):
         if all((mean - sigma) < i < (mean + sigma) for i in chunks[i]) :
-            results.append(False) # True
+            results.append(True) # True
         else:
             results.append(False)
 
@@ -358,4 +335,4 @@ def rule8(original, mean, sigma):
 
     return results
 
-# apply_rules(original=data)
+apply_rules(original=data)

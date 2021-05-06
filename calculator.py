@@ -30,7 +30,8 @@ class Calculator(object):
             totalNum = goodNum + defectNum
             goodRate = goodNum / totalNum 
             defectRate = defectNum / totalNum
-            Target = datatables.iloc[1,7]
+            Target = datatables.std_v[1]
+            print('Target'.format(Target))
             USL = (datatables.iloc[1,4] + Target)
             LSL = (Target - datatables.iloc[1,3])
             LCL = (LSL + Target)/2
@@ -44,7 +45,6 @@ class Calculator(object):
                 mergerest = np.concatenate((cpkarr[-2],cpkarr[-1]), axis = None)
                 arrBack = [np.mean(i) for i in mergerest]
                 arrmean = arrFront.append(arrBack)
-                # print('a///////////',[cpkarr,arrBack,arrmean])
                 sigmaCpk = np.std(arrmean,ddof=1) #pd.std()
             else:
                 cpkarr = np.array_split(arr,ngroup)
