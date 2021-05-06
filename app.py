@@ -120,19 +120,7 @@ def nelson():
 #-----------------ENTRANCE-----------------------
 @app.route('/', methods=['GET'])
 def home():
-  # b = request.args.get('startTime') # b = 2020-09-02T07:41:03Z
-  # e = request.args.get('endTime') # e = 2021-01-15T10:47:32Z
-  # wuuid = request.args.get('wooh_uuid')
-  # suuid = request.args.get('smpc_uuid')
-  # # b = '2020-09-02T07:41:03Z'
-  # e = '2021-01-15T10:47:32Z'
-  # wuuid = 'd5473fb7-42ac-4794-bf4d-358f4ddccd1c'
-  # suuid = '69636a46-48cb-4a99-976e-5ecc024c1332'
-  # resultCapablity = SpcTable.queryfunc(startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
-  # print("Capablity result: ", resultCapablity)
   return 'ok', 200
-  
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=os.getenv('PORT')) #os.getenv('PORT')

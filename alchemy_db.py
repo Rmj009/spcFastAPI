@@ -29,7 +29,7 @@ class spc_measure_point_config(db.Model): #Sojourn 1
     std_value = db.Column(db.Float, nullable=False)
     usl = db.Column(db.Float, nullable=False)
     lsl = db.Column(db.Float, nullable=False)
-    measure_amount = db.Column(db.Float, nullable=False)
+    measure_amount = db.Column(db.Integer, nullable=False)
     range_spec = db.Column(db.Float, nullable=False)
     sample_number = db.Column(db.Float, nullable=False)
     rules = db.Column(
@@ -73,7 +73,7 @@ class spc_measure_point_history(db.Model): #Sojourn 2
     spc_measure_point_config_uuid = db.Column(
         db.String(50), unique=False, nullable=False)
     value = db.Column(db.Float, nullable=False) #float?
-    measure_object_id = db.Column(db.Float, nullable=False)
+    measure_object_id = db.Column(db.Integer, nullable=False)
     spc_measure_instrument_uuid = db.Column(
         db.String(50), unique=False, nullable=False)
     

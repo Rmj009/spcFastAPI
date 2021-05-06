@@ -126,11 +126,7 @@ class SpcTable:
             else:
                 yy = j1.filter(table_smph.work_order_op_history_uuid == wooh_uuid)
                 queryResult = [row for row in session.execute(yy)]
-                # datatables = SpcTable.dataPipline(tables=queryResult)
-                # t = threading.Thread(target = apply_rules, args=(qResult['valuelst'],'all',2) ,daemon=True);t.start()
-                # SpcTable.drawchart2(original=datatables.valuelst) # draw and save the raw
-                # capablityResult = Calculator.calc(datatables=datatables)# calculate the CPR
-                return queryResult # capablityResult #,JSONP_data
+                return queryResult
 
         except exc.SQLAlchemyError as e:
                 print("eeeeeeeeeeeerror type: ",type(e),str(e))
@@ -165,7 +161,7 @@ class SpcTable:
         queryResult = SpcTable.queryfunc(startTime=b, endTime=e, wooh_uuid=wuuid, smpc_uuid=suuid)
         datatables  = SpcTable.dataPipline(tables=queryResult)
         # nelsonResult = apply_rules(original=datatables.valuelst)
-        nelsonBool = apply_rules(original=datatables.valuelst) # verify rules
+        nelsonBool = apply_rules(original=datatables.valuelst) # markup points after rules verified 
         df_list = nelsonBool.values.tolist()
         JSONP_data = jsonify(df_list)
         return JSONP_data
