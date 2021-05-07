@@ -163,7 +163,20 @@ class SpcTable:
         # nelsonResult = apply_rules(original=datatables.valuelst)
         nelsonBool = apply_rules(original=datatables.valuelst) # markup points after rules verified 
         df_list = nelsonBool.values.tolist()
-        JSONP_data = jsonify(df_list)
+        data = [item[0] for item in df_list]
+        rule1 = [item[1] for item in df_list]
+        rule2 = [item[2] for item in df_list]
+        rule3 = [item[3] for item in df_list]
+        rule4 = [item[4] for item in df_list]
+        rule5 = [item[5] for item in df_list]
+        rule6 = [item[6] for item in df_list]
+        rule7 = [item[7] for item in df_list]
+        rule8 = [item[8] for item in df_list]
+        columnName = ["data","rule1","rule2","rule3","rule4","rule5","rule6","rule7","rule8"]
+        columnValue = [data,rule1,rule2,rule3,rule4,rule5,rule6,rule7,rule8]
+        rulelst = dict(zip(columnName,columnValue))
+        JSONP_data = jsonify(rulelst)
+        # print('JJJJJJJJJJJJ',JSONP_data)
         return JSONP_data
 
   
