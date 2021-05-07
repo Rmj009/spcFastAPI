@@ -35,13 +35,13 @@ def _clean_chunks(original, modified, segment_len):
     results = []
     results = modified
     for i in range(len(original) - len(modified)):
-        results.append(False)
+        results.append(0)
 
-    # set every value in a qualified chunk to True
+    # set every value in a qualified chunk to 1
     for i in reversed(range(len(results))):
-        if results[i] == True:
+        if results[i] == 1:
             for d in range(segment_len):
-                results[i+d] = True
+                results[i+d] = 1
     return results
 
 # markuPoints = []
@@ -60,7 +60,7 @@ def plot_rules(data, chart_type=2):
         axs = axs.ravel()
         for i in range(len(columns)):
            axs[i].plot(data.iloc[:, 0])
-           axs[i].plot(data.iloc[:, 0][(data.iloc[:, i+1] == True)], 'x')
+           axs[i].plot(data.iloc[:, 0][(data.iloc[:, i+1] == 1)], 'x')
            axs[i].set_title(columns[i])
 
         return fig
@@ -76,7 +76,7 @@ def plot_rules(data, chart_type=2):
         columns = data.columns[1:]
 
         for i in range(len(data.columns[1:])):
-            axs.plot(data.iloc[:, 0][(data.iloc[:, i+1] == True)], ls='', marker=marker[i], markersize=20, label=columns[i])
+            axs.plot(data.iloc[:, 0][(data.iloc[:, i+1] == 1)], ls='', marker=marker[i], markersize=20, label=columns[i])
 
         plt.legend()
         # plt.show()
@@ -115,11 +115,11 @@ def rule1(original, mean, sigma):
     results = []
     for i in range(len(copy_original)):
         if copy_original[i] < llim:
-            results.append(True)
+            results.append(1)
         elif copy_original[i] > ulim:
-            results.append(True)
+            results.append(1)
         else:
-            results.append(False)
+            results.append(0)
 
     return results
 
@@ -147,9 +147,9 @@ def rule2(original, mean, sigma):
     results = []
     for i in range(len(chunks)):
         if chunks[i].sum() == segment_len or chunks[i].sum() == (-1 * segment_len):
-            results.append(True)
+            results.append(1)
         else:
-            results.append(False)
+            results.append(0)
 
     # clean up results
     results = _clean_chunks(copy_original, results, segment_len)
@@ -183,9 +183,9 @@ def rule3(original, mean, sigma):
                     chunk.append(1)
 
         if sum(chunk) == segment_len-1:
-            results.append(True)
+            results.append(1)
         else:
-            results.append(False)
+            results.append(0)
 
     # clean up results
     results = _clean_chunks(copy_original, results, segment_len)
@@ -216,14 +216,14 @@ def rule4(original, mean, sigma):
 
             if current_state != direction:
                 current_state = direction
-                result = True
+                result = 1
             else:
-                result = False
+                result = 0
                 break
 
         results.append(result)
 
-    # fill incomplete chunks with False
+    # fill incomplete chunks with 0
     results = _clean_chunks(copy_original, results, segment_len)
 
     return results
@@ -245,11 +245,11 @@ def rule5(original, mean, sigma):
     results = []
     for i in range(len(chunks)):
         if all(i > (mean + sigma * 2) for i in chunks[i]) or all(i < (mean - sigma * 2) for i in chunks[i]):
-            results.append(True)
+            results.append(1)
         else:
-            results.append(False)
+            results.append(0)
 
-    # fill incomplete chunks with False
+    # fill incomplete chunks with 0
     results = _clean_chunks(copy_original, results, segment_len)
 
     return results
@@ -271,11 +271,11 @@ def rule6(original, mean, sigma):
     results = []
     for i in range(len(chunks)):
         if all(i > (mean + sigma) for i in chunks[i]) or all(i < (mean - sigma) for i in chunks[i]):
-            results.append(True)
+            results.append(1)
         else:
-            results.append(False)
+            results.append(0)
 
-    # fill incomplete chunks with False
+    # fill incomplete chunks with 0
     results = _clean_chunks(copy_original, results, segment_len)
 
     return results
@@ -296,11 +296,11 @@ def rule7(original, mean, sigma): #temporary off
     results = []
     for i in range(len(chunks)):
         if all((mean - sigma) < i < (mean + sigma) for i in chunks[i]) :
-            results.append(True) # True
+            results.append(1) # 1
         else:
-            results.append(False)
+            results.append(0)
 
-    # fill incomplete chunks with False
+    # fill incomplete chunks with 0
     results = _clean_chunks(original = copy_original, modified= results, segment_len = segment_len)
     # print(results)
 
@@ -326,11 +326,11 @@ def rule8(original, mean, sigma):
         if all(i < (mean - sigma) or i > (mean + sigma) for i in chunks[i])\
                 and any(i < (mean - sigma) for i in chunks[i])\
                 and any(i > (mean + sigma) for i in chunks[i]):
-            results.append(True)
+            results.append(1)
         else:
-            results.append(False)
+            results.append(0)
 
-    # fill incomplete chunks with False
+    # fill incomplete chunks with 0
     results = _clean_chunks(copy_original, results, segment_len)
 
     return results

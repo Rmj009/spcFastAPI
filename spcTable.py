@@ -176,7 +176,6 @@ class SpcTable:
         columnValue = [data,rule1,rule2,rule3,rule4,rule5,rule6,rule7,rule8]
         rulelst = dict(zip(columnName,columnValue))
         JSONP_data = jsonify(rulelst)
-        # print('JJJJJJJJJJJJ',JSONP_data)
         return JSONP_data
 
   
