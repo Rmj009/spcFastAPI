@@ -142,7 +142,6 @@ class SpcTable:
         lsllst = [item[3] for item in tables]
         usllst = [item[4] for item in tables]
         amount = [item[5] for item in tables] # measure_amount
-        # print('measure_amount',amount)
         std_v = [item[6] for item in tables] # target
         CapabilityColumn = ["valuelst","goodlst","defectlst","lsllst","usllst","amount","std_v"]
         measurelst = [valuelst,goodlst,defectlst,lsllst,usllst,amount,std_v]
@@ -160,7 +159,6 @@ class SpcTable:
     def NelsonDraw(b,e,wuuid,suuid):
         queryResult = SpcTable.queryfunc(startTime=b, endTime=e, wooh_uuid=wuuid, smpc_uuid=suuid)
         datatables  = SpcTable.dataPipline(tables=queryResult)
-        # nelsonResult = apply_rules(original=datatables.valuelst)
         nelsonBool = apply_rules(original=datatables.valuelst) # markup points after rules verified 
         df_list = nelsonBool.values.tolist()
         data = [item[0] for item in df_list]

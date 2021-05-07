@@ -55,7 +55,6 @@ class Calculator(object):
                 raise Exception('unreasonable anomaly') 
             assert sigmaPpk != 0
             assert sigmaCpk != 0
-            print('///////',[sigmaCpk,sigmaPpk])
             Cp = (rangespec) / (sigmaCpk*6) 
             Ck = abs((Target - cp_mean)/ (rangespec / 2))
             Cpu = (USL - cp_mean) / (sigmaCpk*3)

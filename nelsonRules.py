@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
 df = pd.read_csv('workbook_name.csv', sep=',',header=0); nmp = df.to_numpy() ;data = nmp[:,11]#; data = pd.DataFrame(nmp[:,11])
 # data = spcTable.data
 """
@@ -335,4 +336,134 @@ def rule8(original, mean, sigma):
 
     return results
 
-apply_rules(original=data)
+
+    def drawchart2(original):
+        """Plot RawData"""
+        text_offset = 70
+        mean = np.mean(original)
+        sigma = np.std(original)
+        # print("###",[mean,sigma])
+        fig = plt.figure(figsize=(20, 10))
+        ax1 = fig.add_subplot(1, 1, 1)
+        ax1.plot(original, color='blue', linewidth=1.5)
+
+        # plot mean
+        ax1.axhline(mean, color='r', linestyle='--', alpha=0.5)
+        ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),
+                    xytext=(text_offset, 0), fontsize=18)
+
+        # plot 1-3 standard deviations
+        sigma_range = np.arange(1,4)
+        for i in range(len(sigma_range)):
+            ax1.axhline(mean + (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+            ax1.axhline(mean - (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+            ax1.annotate('%s $\sigma$' % sigma_range[i], xy=(len(original), mean + (sigma_range[i] * sigma)),
+                        textcoords=('offset points'),
+                        xytext=(text_offset, 0), fontsize=18)
+            ax1.annotate('-%s $\sigma$' % sigma_range[i],
+                        xy=(len(original), mean - (sigma_range[i] * sigma)),
+                        textcoords=('offset points'),
+                        xytext=(text_offset, 0), fontsize=18)
+        # plt.show()
+        plt.savefig('static/classicialcc.png')
+        return
+
+    def drawchart2(original):
+        """Plot RawData"""
+        text_offset = 70
+        mean = np.mean(original)
+        sigma = np.std(original)
+        # print("###",[mean,sigma])
+        fig = plt.figure(figsize=(20, 10))
+        ax1 = fig.add_subplot(1, 1, 1)
+        ax1.plot(original, color='blue', linewidth=1.5)
+
+        # plot mean
+        ax1.axhline(mean, color='r', linestyle='--', alpha=0.5)
+        ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),
+                    xytext=(text_offset, 0), fontsize=18)
+
+        # plot 1-3 standard deviations
+        sigma_range = np.arange(1,4)
+        for i in range(len(sigma_range)):
+            ax1.axhline(mean + (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+            ax1.axhline(mean - (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+            ax1.annotate('%s $\sigma$' % sigma_range[i], xy=(len(original), mean + (sigma_range[i] * sigma)),
+                        textcoords=('offset points'),
+                        xytext=(text_offset, 0), fontsize=18)
+            ax1.annotate('-%s $\sigma$' % sigma_range[i],
+                        xy=(len(original), mean - (sigma_range[i] * sigma)),
+                        textcoords=('offset points'),
+                        xytext=(text_offset, 0), fontsize=18)
+        # plt.show()
+        plt.savefig('static/classicialcc.png')
+        return
+
+
+
+    def drawchart2(original):
+        """Plot RawData"""
+        text_offset = 70
+        mean = np.mean(original)
+        sigma = np.std(original)
+        # print("###",[mean,sigma])
+        fig = plt.figure(figsize=(20, 10))
+        ax1 = fig.add_subplot(1, 1, 1)
+        ax1.plot(original, color='blue', linewidth=1.5)
+
+        # plot mean
+        ax1.axhline(mean, color='r', linestyle='--', alpha=0.5)
+        ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),
+                    xytext=(text_offset, 0), fontsize=18)
+
+        # plot 1-3 standard deviations
+        sigma_range = np.arange(1,4)
+        for i in range(len(sigma_range)):
+            ax1.axhline(mean + (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+            ax1.axhline(mean - (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+            ax1.annotate('%s $\sigma$' % sigma_range[i], xy=(len(original), mean + (sigma_range[i] * sigma)),
+                        textcoords=('offset points'),
+                        xytext=(text_offset, 0), fontsize=18)
+            ax1.annotate('-%s $\sigma$' % sigma_range[i],
+                        xy=(len(original), mean - (sigma_range[i] * sigma)),
+                        textcoords=('offset points'),
+                        xytext=(text_offset, 0), fontsize=18)
+        # plt.show()
+        plt.savefig('static/classicialcc.png')
+        return
+
+
+def drawchart2(original):
+    """Plot RawData"""
+    text_offset = 70
+    mean = np.mean(original)
+    sigma = np.std(original)
+    # print("###",[mean,sigma])
+    fig = plt.figure(figsize=(20, 10))
+    ax1 = fig.add_subplot(1, 1, 1)
+    ax1.plot(original, color='blue', linewidth=1.5)
+
+    # plot mean
+    ax1.axhline(mean, color='r', linestyle='--', alpha=0.5)
+    ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),
+                xytext=(text_offset, 0), fontsize=18)
+
+    # plot 1-3 standard deviations
+    sigma_range = np.arange(1,4)
+    for i in range(len(sigma_range)):
+        ax1.axhline(mean + (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+        ax1.axhline(mean - (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+        ax1.annotate('%s $\sigma$' % sigma_range[i], xy=(len(original), mean + (sigma_range[i] * sigma)),
+                    textcoords=('offset points'),
+                    xytext=(text_offset, 0), fontsize=18)
+        ax1.annotate('-%s $\sigma$' % sigma_range[i],
+                    xy=(len(original), mean - (sigma_range[i] * sigma)),
+                    textcoords=('offset points'),
+                    xytext=(text_offset, 0), fontsize=18)
+    # plt.show()
+    plt.savefig('static/classicialcc2.png')
+    return
+
+drawchart2(original=data) 
+# result = apply_rules(original=data)
+# print('result',result)
