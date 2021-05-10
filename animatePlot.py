@@ -74,22 +74,23 @@ def drawchart(original):
                     textcoords=('offset points'),
                     xytext=(text_offset, 0), fontsize=18)
     # plt.show()
-    plt.savefig('static/classicialcc.png')
+    plt.savefig('static/img/classicialcc.png')
     return
 
-def emitter(): #p=0.1
+def emitter(object): #p=0.1
     """Return a random value in [0, 1) with probability p, else 0."""
     while True:
-        # v = np.random.rand(1)
-        for i in result[0]:
-            time.sleep(0.05)
-            yield result[0][i]
-        # for i in result[1]:
+        for index, row in df.iterrows():
+            yield object[row][index]
+        # for i,j in object:
+        #     time.sleep(0.05)
+        #     yield object[i][j]
+        #     for j in range(len(object)):
+        #         yield object[i][j]
+        # for j in object[1]:
         #     time.sleep(0.1)
-        #     yield result[0][i]
+        #     yield object[0][i]
 
-# Fixing random state for reproducibility
-# np.random.seed(19680801 // 10)
 fig, ax = plt.subplots()
 # fig = plt.figure(figsize=(20, 10))
 
@@ -108,6 +109,6 @@ sigma = np.std(result[0])
 
 scope = Scope(ax)
 # pass a generator in "emitter" to produce data for the update func
-ani = animation.FuncAnimation(fig, scope.update, emitter, interval=50, blit=True)
+ani = animation.FuncAnimation(fig, scope.update, emitter(object=result), interval=50, blit=True)
 
 plt.show()

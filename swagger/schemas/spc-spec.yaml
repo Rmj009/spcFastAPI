@@ -1,0 +1,42 @@
+SpcSpec:
+  properties:
+    good:
+      type: number
+    defect:
+      type: number
+    totalNum:
+      type: number
+    goodRate:
+      type: number
+    USL:
+      type: number
+    LSL:
+      type: number
+    UCL:
+      type: number
+    LCL:
+      type: number
+    sampleStandardDeviation:
+      type: number
+    target:
+      type: number
+    mean:
+      type: number
+    range:
+      type: number
+    CPU:
+      type: number
+    CPL:
+      type: number
+    CP:
+      type: number
+    CK:
+      type: number
+    CPK:
+      type: number
+    PPK:
+      type: number
+SpcSpecs:
+  type: array
+  items:
+    $ref: "#SpcSpec"

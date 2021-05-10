@@ -1,0 +1,251 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "spc-stat-oas3",
+    "title": "SpcSpec",
+    "description": "An API to spc"
+  },
+  "paths": {
+    "/SpcSpec": {
+      "get": {
+        "tags": [
+          "spec"
+        ],
+        "summary": "取得統計結果",
+        "operationId": "getSpec",
+        "parameters": [
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "工序報工歷史資料(workOrderHistory) 的開工時間 2020-05-20T16:26:46Z\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-05-20T16:26:46Z"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "工序報工歷史資料(workOrderHistory) 的完工時間 2020-05-20T16:26:46Z\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2021-01-15T10:47:32Z"
+            }
+          },
+          {
+            "name": "spcMeasurePointConfigUUID",
+            "in": "query",
+            "description": "量測點參數的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "required": [
+                "uuid"
+              ],
+              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
+            }
+          },
+          {
+            "name": "workOrderOpHistoryUUID",
+            "in": "query",
+            "description": "工序報工歷史資料的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "統計結果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Capability": {
+      "get": {
+        "tags": [
+          "capability"
+        ],
+        "summary": "取得統計結果",
+        "operationId": "getCapability",
+        "parameters": [
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "工序報工歷史資料(workOrderHistory) 的開工時間 2020-05-20T16:26:46Z\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-05-20T16:26:46Z"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "工序報工歷史資料(workOrderHistory) 的完工時間 2020-05-20T16:26:46Z\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2021-01-15T10:47:32Z"
+            }
+          },
+          {
+            "name": "spcMeasurePointConfigUUID",
+            "in": "query",
+            "description": "量測點參數的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "required": [
+                "uuid"
+              ],
+              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
+            }
+          },
+          {
+            "name": "workOrderOpHistoryUUID",
+            "in": "query",
+            "description": "工序報工歷史資料的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "統計結果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SpcSpec": null,
+    "properties": {
+      "good": {
+        "type": "number"
+      },
+      "defect": {
+        "type": "number"
+      },
+      "totalNum": {
+        "type": "number"
+      },
+      "goodRate": {
+        "type": "number"
+      },
+      "USL": {
+        "type": "number"
+      },
+      "LSL": {
+        "type": "number"
+      },
+      "UCL": {
+        "type": "number"
+      },
+      "LCL": {
+        "type": "number"
+      },
+      "sampleStandardDeviation": {
+        "type": "number"
+      },
+      "target": {
+        "type": "number"
+      },
+      "mean": {
+        "type": "number"
+      },
+      "range": {
+        "type": "number"
+      },
+      "CPU": {
+        "type": "number"
+      },
+      "CPL": {
+        "type": "number"
+      },
+      "CP": {
+        "type": "number"
+      },
+      "CK": {
+        "type": "number"
+      },
+      "CPK": {
+        "type": "number"
+      },
+      "PPK": {
+        "type": "number"
+      }
+    },
+    "Capability": {
+      "properties": null,
+      "value": {
+        "type": "number"
+      },
+      "rule1": {
+        "type": "number"
+      },
+      "rule2": {
+        "type": "number"
+      },
+      "rule3": {
+        "type": "number"
+      },
+      "rule4": {
+        "type": "number"
+      },
+      "rule5": {
+        "type": "number"
+      },
+      "rule6": {
+        "type": "number"
+      },
+      "rule7": {
+        "type": "number"
+      },
+      "rule8": {
+        "type": "number"
+      }
+    }
+  }
+}

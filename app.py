@@ -1,21 +1,18 @@
 # export DATABASE_URL='postgres://localhost:5432/
 from datetime import datetime
-import os,html
+import os,html,sys,traceback
 from flask import Flask, request, render_template, abort, url_for, redirect, json, jsonify, escape
 from flask_cors import CORS
+from spcTable import SpcTable
+
 # from flask_jsonpify import jsonpify
 app = Flask(__name__, static_url_path='')
-cors = CORS(app, resources={r"/capability/*"})
+# cors = CORS(app, resources={r"/capability/*"})
 
 app.config["DEBUG"] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:edge9527@host.docker.internal:5432/dev_tenant'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:edge9527@aaaaa:5432/dev_tenant'
-"""
-import the others function
-"""
-from spcTable import SpcTable
-import os,sys,traceback
 
 #------------CONFIGURATION--------------
 # print(os.getcwd()) # print the pwd status
@@ -43,38 +40,33 @@ class PassGateway():
     # return 500 code
     abort(500, errMsg)
 #----------------GET-------------------
+# @app.route('/plot.png')
+# def plot_png():
+#     fig = create_figure()
+#     output = io.BytesIO()
+#     FigureCanvas(fig).print_png(output)
+#     return Response(output.getvalue(), mimetype='static/img/Nelson65.png')
+
+# def create_figure():
+#     fig = Figure()
+#     axis = fig.add_subplot(1, 1, 1)
+#     xs = range(100)
+#     ys = [random.randint(1, 50) for x in xs]
+#     axis.plot(xs, ys)
+#     return fig
+
 @app.route('/front', methods=['GET'])
 def index():
   if request.method == "GET":
-    b = request.args.get('startTime') # sync to cloud
-    e = request.args.get('endTime') 
-    wuuid = request.args.get('workOrderOpHistoryUUID')
-    suuid = request.args.get('spcMeasurePointConfigUUID')
-    resultCapablity = SpcTable.queryfunc(startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
     try: 
-      return render_template('index.html', title="spc_show", jsonfile=json.jsonify(resultCapablity) )
+      return render_template('index2.html', title="spc_show", name = 'new_plot', url ='/static/Nelson65.png')#, jsonfile=json.jsonify(resultCapablity) )
     except Exception as e:
-      pass
-      # query params
-      # arg_n = request.args.get('n') # try to request 'n'
-      # body json
-      body_json = request.get_json() # get the json from body
-      paul = body_json['paul']
+      print('type of:',type(e))
 
-      u = body_json['upperLimit']
-      l = body_json['lowerLimit']
-      v = body_json['value']
-      test_u_l(u, l, v)
-      if v > u:
-        print("no 1")
-      elif v < l:
-        print("no 2")
-      else:
-        print("ok")
-      
-      print("paul: ",paul)
-      print("body_json: ", body_json)   
-    return 'ok'
+@app.route('/api/docs')
+def get_docs():
+    print('sending docs')
+    return render_template('swaggerui.html')
 
 @app.route("/v1/capability", methods=['GET'])
 def capability():

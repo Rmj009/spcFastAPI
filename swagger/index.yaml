@@ -1,0 +1,40 @@
+openapi: "3.0.0"
+info:
+  version: 0.1.0
+  title: SPC Backend Statistic API
+  contact:
+    name: DOTZERO
+    email: info@dotzero.tech
+  description: this api is for spc <br>it will use token to get any data belong your tenant
+servers:
+  - url: https://dotzerotech-spc-backend.dotzero.app
+  - url: http://spc-backend.dz.local
+  - url: http://localhost:5000
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - BearerAuth: []
+paths:
+  # /pets:
+  #   $ref: ./paths/pets/index.yaml
+  # /pets/{petId}:
+  #   $ref: ./paths/pets/specified.yaml
+  # /v1/config/:
+  #   $ref: ./paths/spc-measure-point-config/index.yaml
+  # /v1/history/:
+  #   $ref: ./paths/spc-measure-point-history/index.yaml
+  # /v1/history/count/:
+  #   $ref: ./paths/spc-measure-point-history/count.yaml
+  # /v1/history/batch/:
+  #   $ref: ./paths/spc-measure-point-history/batch.yaml
+  /api/docs/:
+    $ref: ./paths/spc-chart-data/index.yaml
+  /capability:
+    $ref: ./paths/spc-spec/index.yaml
+
+tags:
+  - name: spec
+    description: 統計結果

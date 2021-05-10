@@ -69,7 +69,7 @@ class SpcTable:
         plt.legend()
         plt.ylim(0,25)
         # # plt.plot(datapoints)
-        plt.savefig('static/control-chart.png')
+        plt.savefig('static/img/control-chart.png')
         # # g = sns.relplot(x = 'all_vals', y = 'format_1', data = trendObj, kind="line")
         # # g.fig.autofmt_xdate()
         plt.show()
@@ -103,10 +103,9 @@ class SpcTable:
                         textcoords=('offset points'),
                         xytext=(text_offset, 0), fontsize=18)
         # plt.show()
-        plt.savefig('static/classicialcc.png')
+        plt.savefig('static/img/classicialcc.png')
         return
 
-    # start_time,end_time,work_order_op_history_uuid,spc_measure_point_config_uuid
     def queryfunc(startTime,endTime,wooh_uuid,smpc_uuid): 
         table_smpc = aliased(spc_measure_point_config) # operation_uuid <=> table_opwh
         table_smph = aliased(spc_measure_point_history) # work_order_op_history_uuid <=> table_opwh.uuid
