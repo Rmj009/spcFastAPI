@@ -63,7 +63,7 @@ def index():
     except Exception as e:
       print('type of:',type(e))
 
-@app.route('/api/docs')
+@app.route('/api-docs')
 def get_docs():
     print('sending docs')
     return render_template('swaggerui.html')
@@ -87,7 +87,6 @@ def capability():
   else:
     result = SpcTable.CPRfunc(b=b, e=e, wuuid=wuuid, suuid=suuid)# (startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
     return result, 200
-
 
 @app.route("/v1/nelson", methods=['GET'])
 def nelson():
