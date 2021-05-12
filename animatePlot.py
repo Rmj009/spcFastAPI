@@ -80,16 +80,17 @@ def drawchart(original):
 def emitter(object): #p=0.1
     """Return a random value in [0, 1) with probability p, else 0."""
     while True:
-        for index, row in df.iterrows():
-            yield object[row][index]
+        for i,j in enumerate(object[0]):
+            time.sleep(0.1)
+            yield object[0][i]
+    #     for index, row in df.iterrows():
+    #         yield object[row][index]
         # for i,j in object:
         #     time.sleep(0.05)
         #     yield object[i][j]
         #     for j in range(len(object)):
         #         yield object[i][j]
-        # for j in object[1]:
-        #     time.sleep(0.1)
-        #     yield object[0][i]
+    
 
 fig, ax = plt.subplots()
 # fig = plt.figure(figsize=(20, 10))

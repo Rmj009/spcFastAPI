@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 df = pd.read_csv('workbook_name.csv', sep=',',header=0); nmp = df.to_numpy() ;data = nmp[:,11]#; data = pd.DataFrame(nmp[:,11])
 # data = spcTable.data
@@ -365,7 +366,14 @@ def drawchart2(original):
 
 # drawchart2(original=data) 
 result = apply_rules(original=data)
-print('result',result.head())
+# print('rrrr',enumerate(result))
+# sns.set_style('whitegrid')
+# sns.kdeplot([j for i,j in enumerate(result[0])], bw=0.5)
+result[0].plot(kind='density')
+plt.show()
+
+
+print('result',result.head(), sep='/n')
 
 # for index, row in df.iterrows():
 #     print(result['index'])
