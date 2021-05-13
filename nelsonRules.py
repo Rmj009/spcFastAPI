@@ -345,8 +345,7 @@ def drawchart2(original):
 
     # plot mean
     ax1.axhline(mean, color='r', linestyle='--', alpha=0.5)
-    ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),
-                xytext=(text_offset, 0), fontsize=18)
+    ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),xytext=(text_offset, 0), fontsize=18)
 
     # plot 1-3 standard deviations
     sigma_range = np.arange(1,4)
@@ -362,17 +361,18 @@ def drawchart2(original):
                     xytext=(text_offset, 0), fontsize=18)
     # plt.show()
     plt.savefig('static/img/classicialcc2.png')
-    return
+    return fig 
 
-# drawchart2(original=data) 
+
 result = apply_rules(original=data)
-# print('rrrr',enumerate(result))
-# sns.set_style('whitegrid')
-# sns.kdeplot([j for i,j in enumerate(result[0])], bw=0.5)
-result[0].plot(kind='density')
-plt.show()
+# # print('rrrr',enumerate(result))
+# # sns.set_style('whitegrid')
+# # sns.kdeplot([j for i,j in enumerate(result[0])], bw=0.5)
+# result[0].plot(kind='density')
+# plt.show()
 
-
+# drawchart2(original=result[0])
+# plt.show()
 print('result',result.head(), sep='/n')
 
 # for index, row in df.iterrows():

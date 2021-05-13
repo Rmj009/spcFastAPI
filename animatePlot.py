@@ -2,10 +2,10 @@ from nelsonRules import *
 import matplotlib.animation as animation
 from matplotlib.animation import FuncAnimation
 from matplotlib.lines import Line2D
-import time
+import time,os
 
 class Scope:
-    def __init__(self, ax, maxt=200, dt=2):
+    def __init__(self, ax, maxt=225, dt=2):
         self.ax = ax
         self.dt = dt
         self.maxt = maxt
@@ -13,7 +13,7 @@ class Scope:
         self.ydata = [0]
         self.line = Line2D(self.tdata, self.ydata)
         self.ax.add_line(self.line)
-        self.ax.set_ylim(0, 30)
+        self.ax.set_ylim(0, 60)
         self.ax.set_xlim(0, self.maxt)
 
     def update(self, y):
@@ -29,28 +29,31 @@ class Scope:
         self.ydata.append(y)
         self.line.set_data(self.tdata, self.ydata)
         # plot mean
+        text_offset = 70
+        mean = np.mean(result[0])
+        sigma = np.std(result[0])
+
         ax.axhline(mean, color='r', linestyle='--', alpha=0.5)
-        ax.annotate('$\overline{x}$', xy=(len(result[0]), mean), textcoords=('offset points'),xytext=(text_offset, 0), fontsize=18)
+        ax.annotate('$\overline{x}$', xy=(len(result[0]), mean), textcoords=('offset points'),xytext=(text_offset, 0), fontsize=9)
         sigma_range = np.arange(1,4)
         for i in range(len(sigma_range)):
             ax.axhline(mean + (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
             ax.axhline(mean - (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
             ax.annotate('%s $\sigma$' % sigma_range[i], xy=(len(result[0]), mean + (sigma_range[i] * sigma)),
                         textcoords=('offset points'),
-                        xytext=(text_offset, 0), fontsize=18)
+                        xytext=(text_offset, 0), fontsize=8)
             ax.annotate('-%s $\sigma$' % sigma_range[i],
                         xy=(len(result[0]), mean - (sigma_range[i] * sigma)),
                         textcoords=('offset points'),
-                        xytext=(text_offset, 0), fontsize=18)
-        return self.line,
+                        xytext=(text_offset, 0), fontsize=8)
+        return self.line,        
 
 
 
 def drawchart(original):
     """Plot RawData"""
-    text_offset = 70
-    mean = np.mean(original)
-    sigma = np.std(original)
+    # mean = np.mean(original)
+    # sigma = np.std(original)
     # print("###",[mean,sigma])
     fig = plt.figure(figsize=(20, 10))
     ax1 = fig.add_subplot(1, 1, 1)
@@ -77,27 +80,32 @@ def drawchart(original):
     plt.savefig('static/img/classicialcc.png')
     return
 
-def emitter(object): #p=0.1
-    """Return a random value in [0, 1) with probability p, else 0."""
-    while True:
-        for i,j in enumerate(object[0]):
-            time.sleep(0.1)
-            yield object[0][i]
-    #     for index, row in df.iterrows():
-    #         yield object[row][index]
-        # for i,j in object:
-        #     time.sleep(0.05)
-        #     yield object[i][j]
-        #     for j in range(len(object)):
-        #         yield object[i][j]
-    
-
-fig, ax = plt.subplots()
-# fig = plt.figure(figsize=(20, 10))
 
 text_offset = 70
 mean = np.mean(result[0])
 sigma = np.std(result[0])
+
+def emitter(object):
+    while True:
+        for i in range(len(object[0])):
+            time.sleep(0.001)
+            if (object[0][i] >= 2* mean):
+                yield object[0][i]
+                print(f'System Pause because of out of boundary:',object[0][i])
+                time.sleep(100)
+            yield object[0][i]
+            
+    # while True:
+        # for i,j in enumerate(object[0]):
+        #     time.sleep(0.01)
+        #     yield object[0][i]
+    #     for index, row in df.iterrows():
+    #         yield object[row][index]
+            
+
+fig, ax = plt.subplots()
+# fig = plt.figure(figsize=(20, 10))
+
 
 # ax = fig.add_subplot(1, 1, 1)
 # ax.plot(result[0], color='blue', linewidth=1.5)
