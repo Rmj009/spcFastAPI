@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "version": "spc-stat-oas3",
-    "title": "SpcSpec",
+    "title": "spc-spec",
     "description": "An API to spc"
   },
   "paths": {
@@ -160,7 +160,7 @@
     }
   },
   "definitions": {
-    "SpcSpec": null,
+    "spc-spec": null,
     "properties": {
       "good": {
         "type": "number"
@@ -217,7 +217,7 @@
         "type": "number"
       }
     },
-    "Capability": {
+    "capability": {
       "properties": null,
       "value": {
         "type": "number"
