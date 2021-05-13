@@ -6,7 +6,7 @@
     "description": "An API to spc"
   },
   "paths": {
-    "/spc-spec": {
+    "/v1/nelson": {
       "get": {
         "tags": [
           "spec"
@@ -82,7 +82,7 @@
         }
       }
     },
-    "/capability": {
+    "/v1/capability": {
       "get": {
         "tags": [
           "capability"
