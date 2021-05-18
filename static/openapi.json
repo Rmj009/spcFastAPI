@@ -2,17 +2,17 @@
   "openapi": "3.0.0",
   "info": {
     "version": "spc-stat-oas3",
-    "title": "spc-spec",
+    "title": "spc-nelson",
     "description": "An API to spc"
   },
   "paths": {
     "/v1/nelson": {
       "get": {
         "tags": [
-          "spec"
+          "nelson"
         ],
         "summary": "取得統計結果",
-        "operationId": "getSpec",
+        "operationId": "getNelson",
         "parameters": [
           {
             "name": "startTime",
@@ -94,9 +94,9 @@
             "description": "工序報工歷史資料(workOrderHistory) 的開工時間 2020-05-20T16:26:46Z\n",
             "schema": {
               "type": "string",
-              "format": "date-time",
-              "example": "2020-05-20T16:26:46Z"
-            }
+              "format": "date-time"
+            },
+            "example": "2020-05-20T16:26:46Z"
           },
           {
             "name": "endTime",
@@ -104,9 +104,9 @@
             "description": "工序報工歷史資料(workOrderHistory) 的完工時間 2020-05-20T16:26:46Z\n",
             "schema": {
               "type": "string",
-              "format": "date-time",
-              "example": "2021-01-15T10:47:32Z"
-            }
+              "format": "date-time"
+            },
+            "example": "2021-01-15T10:47:32Z"
           },
           {
             "name": "spcMeasurePointConfigUUID",
@@ -115,11 +115,9 @@
             "schema": {
               "type": "string",
               "format": "uuid",
-              "required": [
-                "uuid"
-              ],
-              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
-            }
+              "required": ["uuid"]
+            },
+            "example": "7202a1e7-346d-11eb-8118-3ee8fbec59ed"
           },
           {
             "name": "workOrderOpHistoryUUID",
@@ -127,9 +125,9 @@
             "description": "工序報工歷史資料的UUID\n",
             "schema": {
               "type": "string",
-              "format": "uuid",
-              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
-            }
+              "format": "uuid"
+            },
+            "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65"
           }
         ],
         "responses": {
@@ -157,8 +155,18 @@
       }
     }
   },
+  "tags": [
+    {
+      "name": "nelson",
+      "description": "NelsonRule資訊"
+    },
+    {
+      "name": "capability",
+      "description": "量測點統計製程指標"
+    }
+  ],
   "definitions": {
-    "spc-spec": null,
+    "spc-nelson": null,
     "properties": {
       "good": {
         "type": "number"
