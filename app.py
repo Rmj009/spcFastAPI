@@ -2,7 +2,7 @@
 from datetime import datetime
 import os,html,sys,traceback
 from flask import Flask, request, render_template, abort, url_for, redirect, json, jsonify, escape
-# from flask_cors import CORS
+from flask_cors import CORS
 # from flask_jsonpify import jsonpify
 from spcTable import SpcTable
 from errors import *
@@ -41,7 +41,7 @@ def index():
     except Exception as e:
       print('type of:',type(e))
 
-@app.route('/api-docs')
+@app.route('/api-docs/')
 def get_docs():
     print('sending docs')
     return render_template('swaggerui.html')

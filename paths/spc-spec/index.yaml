@@ -45,7 +45,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "../../schemas/spc-spec.yaml#SpcSpec"
+            $ref: "../../schemas/v1/nelson.yaml#SpcSpec"
     default:
       description: unexpected error
       content:

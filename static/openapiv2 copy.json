@@ -1,0 +1,1523 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.4.0",
+    "title": "SPC Backend API",
+    "contact": {
+      "name": "DOTZERO",
+      "email": "info@dotzero.tech"
+    },
+    "description": "this api is for spc <br>it will use token to get any data belong your tenant"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "SpcMeasurePointHistory": {
+        "required": [
+          "UUID"
+        ],
+        "properties": {
+          "UUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "workOrderOpHistoryUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "spcMeasurePointConfigUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workerID": {
+            "description": "worker ID",
+            "type": "string"
+          },
+          "value": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
+      "SpcMeasurePointHistorys": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SpcMeasurePointHistory"
+        }
+      },
+      "SpcMeasurePointConfig": {
+        "required": [
+          "UUID"
+        ],
+        "properties": {
+          "UUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "routeUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "operationUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "routeOperationUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "std_value": {
+            "type": "number",
+            "format": "float"
+          },
+          "USL": {
+            "type": "number",
+            "format": "float"
+          },
+          "LSL": {
+            "type": "number",
+            "format": "float"
+          },
+          "measureAmount": {
+            "type": "number"
+          },
+          "rangeSpec": {
+            "type": "number",
+            "format": "float"
+          },
+          "sampleNumber": {
+            "type": "number",
+            "format": "float"
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "continuing8PointUp",
+                "continuing8PointDown",
+                "continuing8PointUpDown",
+                "overSpecLimit"
+              ]
+            }
+          }
+        }
+      },
+      "SpcMeasurePointConfigs": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SpcMeasurePointConfig"
+        }
+      },
+      "SpcMeasureInstrument": {
+        "required": [
+          "UUID"
+        ],
+        "properties": {
+          "UUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "SpcDashboard": {
+        "required": [
+          "UUID"
+        ],
+        "properties": {
+          "UUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "chartType": {
+            "type": "string"
+          },
+          "productUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "routeUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "operationUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "spcMeasurePointUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SpcDashboards": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SpcDashboard"
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/rule/": {
+      "get": {
+        "summary": "取得管制圖的規則",
+        "operationId": "getSpecRule",
+        "tags": [
+          "rule"
+        ],
+        "responses": {
+          "200": {
+            "description": "規則的列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/capability": {
+      "get": {
+        "summary": "取得CPK&PPK",
+        "operationId": "getControlChartData",
+        "tags": [
+          "chart"
+        ],
+        "parameters": [
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "工序報工歷史資料(workOrderHistory) 的開工時間\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2017-02-01T16:26:46Z"
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "工序報工歷史資料(workOrderHistory) 的完工時間\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2021-05-04T10:47:32Z"
+          },
+          {
+            "name": "spcMeasurePointConfigUUID",
+            "in": "query",
+            "description": "量測點參數的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "7202a1e7-346d-11eb-8118-3ee8fbec59ed"
+          },
+          {
+            "name": "workOrderOpHistoryUUID",
+            "in": "query",
+            "description": "工序報工歷史資料的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65"
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "要不要排序\n",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "none",
+                "device",
+                "workOrderOpHistory"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "管制圖的資訊",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointHistorys"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/history/": {
+      "get": {
+        "summary": "取得輸入的量測資訊",
+        "operationId": "getMeasurePointHistory",
+        "tags": [
+          "history"
+        ],
+        "parameters": [
+          {
+            "name": "spcMeasurePointConfigUUID",
+            "in": "query",
+            "description": "量測點參數UUID\n",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "68fabd0a-1dad-11eb-8796-04d9f5004c08"
+          },
+          {
+            "name": "workOrderOpHistoryUUID",
+            "in": "query",
+            "description": "工序報工歷史資料的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "68fabd0a-1dad-11eb-8796-04d9f5004c08"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "量測資料的陣列",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointHistorys"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "建立輸入的量測資料",
+        "operationId": "create-history",
+        "tags": [
+          "history"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workOrderOpHistoryUUID": {
+                    "description": "工序報工歷史資料的UUID",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "spcMeasurePointConfigUUID": {
+                    "description": "量測點參數的UUID",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "68fabd0a-1dad-11eb-8796-04d9f5004c08"
+                  },
+                  "workerID": {
+                    "description": "量測人員ID",
+                    "type": "string",
+                    "example": "12345"
+                  },
+                  "measureObjectID": {
+                    "description": "量測品ID(同一個工單的同個量測點不得重複)",
+                    "type": "string",
+                    "example": "123456789"
+                  },
+                  "value": {
+                    "description": "量測數值的平均(需自行將valueArray的值取平均)",
+                    "type": "number",
+                    "format": "float",
+                    "example": 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳存入資料庫資訊",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointHistory"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "建立輸入的量測資料(如果重複UUID會自動UPDATE)",
+        "operationId": "upsert-history",
+        "tags": [
+          "history"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "UUID": {
+                    "description": "量測點的UUID",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7a69e3b3-346d-11eb-8118-3ee8fbec59ed"
+                  },
+                  "workOrderOpHistoryUUID": {
+                    "description": "工序報工歷史資料的UUID",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65"
+                  },
+                  "spcMeasurePointConfigUUID": {
+                    "description": "量測點參數的UUID",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7202a1e7-346d-11eb-8118-3ee8fbec59ed"
+                  },
+                  "workerID": {
+                    "description": "量測人員ID",
+                    "type": "string",
+                    "example": "12345"
+                  },
+                  "measureObjectID": {
+                    "description": "量測品ID(同一個工單的同個量測點不得重複)",
+                    "type": "string",
+                    "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65-1"
+                  },
+                  "value": {
+                    "description": "量測數值的平均(需自行將valueArray的值取平均)",
+                    "type": "number",
+                    "format": "float",
+                    "example": 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳存入資料庫資訊",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointHistory"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "更新量測點輸入數值",
+        "operationId": "update-history",
+        "tags": [
+          "history"
+        ],
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "query",
+            "description": "輸入數值的uuid\n",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "584c4e88-1fdc-11eb-be34-04d9f5004c08"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workOrderOpHistoryUUID": {
+                    "description": "工序報工歷史資料的UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "spcMeasurePointConfigUUID": {
+                    "description": "量測點參數的UUID",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "68fabd0a-1dad-11eb-8796-04d9f5004c08"
+                  },
+                  "workerID": {
+                    "description": "量測人員ID",
+                    "type": "string",
+                    "example": 12345
+                  },
+                  "measureObjectID": {
+                    "description": "量測品的ID",
+                    "type": "string",
+                    "example": "123456789"
+                  },
+                  "value": {
+                    "description": "量測數值的平均",
+                    "type": "number",
+                    "format": "float",
+                    "example": 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳影響的資料筆數"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "刪除量測記錄",
+        "operationId": "delete-history",
+        "tags": [
+          "history"
+        ],
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "query",
+            "description": "量測記錄的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回傳影響資料比數",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointHistory"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/history/count/": {
+      "get": {
+        "summary": "取得該量測點的量測數量",
+        "operationId": "getMeasurePointHistoryCount",
+        "tags": [
+          "history"
+        ],
+        "parameters": [
+          {
+            "name": "spcMeasurePointConfigUUID",
+            "in": "query",
+            "description": "量測點參數UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "68fabd0a-1dad-11eb-8796-04d9f5004c08"
+          },
+          {
+            "name": "workOrderOpHistoryUUID",
+            "in": "query",
+            "description": "工序報工歷史資料的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "68fabd0a-1dad-11eb-8796-04d9f5004c08"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "量測資料的陣列",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "description": "數量",
+                      "type": "integer",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/history/batch/": {
+      "patch": {
+        "summary": "批量建立輸入的量測資料(如果重複UUID會自動UPDATE)",
+        "operationId": "upsert-historys",
+        "tags": [
+          "history"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "UUID": {
+                      "description": "量測點的UUID",
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "7a69e3b3-346d-11eb-8118-3ee8fbec59ed"
+                    },
+                    "workOrderOpHistoryUUID": {
+                      "description": "工序報工歷史資料的UUID",
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65"
+                    },
+                    "spcMeasurePointConfigUUID": {
+                      "description": "量測點參數的UUID",
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "7202a1e7-346d-11eb-8118-3ee8fbec59ed"
+                    },
+                    "workerID": {
+                      "description": "量測人員ID",
+                      "type": "string",
+                      "example": "12345"
+                    },
+                    "measureObjectID": {
+                      "description": "量測品ID(同一個工單的同個量測點不得重複)",
+                      "type": "string",
+                      "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65-1"
+                    },
+                    "value": {
+                      "description": "量測數值的平均(需自行將valueArray的值取平均)",
+                      "type": "number",
+                      "format": "float",
+                      "example": 10
+                    },
+                    "valueArray": {
+                      "description": "量測數值陣列(要跟量測點參數的measurePoint一樣長度) -88888888為尚未填寫 -88888889為多於數值留空\n",
+                      "type": "array",
+                      "items": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "example": [
+                        8,
+                        9,
+                        10,
+                        11,
+                        12
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳存入資料庫資訊",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointHistory"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "批量刪除量測資料",
+        "operationId": "delete-historys",
+        "tags": [
+          "history"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "UUID": {
+                      "description": "量測點的UUID",
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "7a69e3b3-346d-11eb-8118-3ee8fbec59ed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳存入資料庫資訊",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointHistory"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/dashboard/": {
+      "get": {
+        "summary": "取得dashboard資料",
+        "operationId": "get-dashboard",
+        "tags": [
+          "dashboard"
+        ],
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "query",
+            "description": "UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "dashboard陣列",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcDashboards"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "創建dashboard",
+        "operationId": "create-dashboard",
+        "tags": [
+          "dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "dashboard name",
+                    "type": "string",
+                    "example": "chart 1"
+                  },
+                  "chartType": {
+                    "description": "chartType",
+                    "type": "string",
+                    "enum": [
+                      "controlChartErrorBar",
+                      "controlChartRangeChart",
+                      "histogram"
+                    ]
+                  },
+                  "startTime": {
+                    "description": "data start time(iso8601)",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endTime": {
+                    "description": "data end time(iso8601)",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "productUUID": {
+                    "description": "物料UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "routeUUID": {
+                    "description": "途層UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "operationUUID": {
+                    "description": "工序的UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "spcMeasurePointUUID": {
+                    "description": "量測點的UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "新增的資料",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcDashboard"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "更新儀錶板參數",
+        "operationId": "update-dashboard",
+        "description": "透過dashboard uuid來更新資料",
+        "tags": [
+          "dashboard"
+        ],
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "query",
+            "description": "dashboard的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "dashboard name",
+                    "type": "string",
+                    "example": "chart 1"
+                  },
+                  "chartType": {
+                    "description": "chartType",
+                    "type": "string",
+                    "enum": [
+                      "controlChartErrorBar",
+                      "controlChartRangeChart",
+                      "histogram"
+                    ]
+                  },
+                  "startTime": {
+                    "description": "data start time(iso8601)",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endTime": {
+                    "description": "data end time(iso8601)",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "productUUID": {
+                    "description": "物料UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "routeUUID": {
+                    "description": "途層UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "operationUUID": {
+                    "description": "工序的UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "spcMeasurePointUUID": {
+                    "description": "量測點的UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳更新的行數"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "刪除儀錶板參數",
+        "operationId": "delete-dashboard",
+        "tags": [
+          "dashboard"
+        ],
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "query",
+            "description": "儀錶板參數的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回傳刪除成功比數"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/config/": {
+      "get": {
+        "summary": "取得量測點參數",
+        "operationId": "getMeasurePointConfig",
+        "tags": [
+          "config"
+        ],
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "query",
+            "description": "UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "operationUUID",
+            "in": "query",
+            "description": "工序UUID，可以從SFR API 中取得\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "量測點參數的陣列",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointConfigs"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "創建量測點參數",
+        "operationId": "create-config",
+        "tags": [
+          "config"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationUUID": {
+                    "description": "工序UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "routeUUID": {
+                    "description": "途層UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "routeOperationUUID": {
+                    "description": "工序*途層的UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "name": {
+                    "description": "量測點名稱\n",
+                    "type": "string",
+                    "example": "measure name"
+                  },
+                  "description": {
+                    "description": "量測點敘述\n",
+                    "type": "string",
+                    "example": "measure description"
+                  },
+                  "unit": {
+                    "description": "單位\n",
+                    "type": "string",
+                    "example": "mm"
+                  },
+                  "mode": {
+                    "description": "模式 unilateralToleranceUpper: \"單向公差(+)\" unilateralToleranceLow: \"單向公差(-)\" bilateralTolerance: \"雙向公差\" geometricalTolerance: \"幾何公差(+/-)\"\n",
+                    "type": "string",
+                    "enum": [
+                      "unilateralToleranceUpper",
+                      "unilateralToleranceLow",
+                      "bilateralTolerance",
+                      "geometricalTolerance"
+                    ]
+                  },
+                  "stdValue": {
+                    "description": "標準值\n",
+                    "type": "number",
+                    "format": "float",
+                    "example": 10
+                  },
+                  "USL": {
+                    "description": "標準值上限\n",
+                    "type": "number",
+                    "format": "float",
+                    "example": 5
+                  },
+                  "LSL": {
+                    "description": "標準值下限\n",
+                    "type": "number",
+                    "format": "float",
+                    "example": 3
+                  },
+                  "measureAmount": {
+                    "description": "量測點數量\n",
+                    "type": "integer"
+                  },
+                  "rangeSpec": {
+                    "description": "容忍值範圍(量測點數量需>1)\n",
+                    "type": "integer",
+                    "format": "float",
+                    "example": 10
+                  },
+                  "sampleNumber": {
+                    "description": "抽檢數量\n",
+                    "type": "integer",
+                    "format": "float",
+                    "example": 10
+                  },
+                  "rules": {
+                    "description": "需要判斷的規則\n",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "continuing8PointUp",
+                        "continuing8PointDown",
+                        "continuing8PointUpDown",
+                        "overSpecLimit"
+                      ]
+                    },
+                    "example": [
+                      "continuing8PointUp",
+                      "overSpecLimit"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "新增的資料",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointConfig"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "更新量測點參數",
+        "operationId": "update-config",
+        "description": "透過config uuid來更新量測點資料",
+        "tags": [
+          "config"
+        ],
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "query",
+            "description": "量測點參數的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationUUID": {
+                    "description": "工序UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "routeUUID": {
+                    "description": "途層UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "routeOperationUUID": {
+                    "description": "工序*途層的UUID\n",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "7e36bfa9-9a31-4c34-818b-0c1c00133064"
+                  },
+                  "name": {
+                    "description": "量測點名稱\n",
+                    "type": "string",
+                    "example": "measure name"
+                  },
+                  "description": {
+                    "description": "量測點敘述\n",
+                    "type": "string",
+                    "example": "measure description"
+                  },
+                  "unit": {
+                    "description": "單位\n",
+                    "type": "string",
+                    "example": "mm"
+                  },
+                  "mode": {
+                    "description": "模式 unilateralToleranceUpper: \"單向公差(+)\" unilateralToleranceLow: \"單向公差(-)\" bilateralTolerance: \"雙向公差\" geometricalTolerance: \"幾何公差(+/-)\"\n",
+                    "type": "string",
+                    "enum": [
+                      "unilateralToleranceUpper",
+                      "unilateralToleranceLow",
+                      "bilateralTolerance",
+                      "geometricalTolerance"
+                    ]
+                  },
+                  "stdValue": {
+                    "description": "標準值\n",
+                    "type": "number",
+                    "format": "float",
+                    "example": 10
+                  },
+                  "USL": {
+                    "description": "標準值上限\n",
+                    "type": "number",
+                    "format": "float",
+                    "example": 5
+                  },
+                  "LSL": {
+                    "description": "標準值下限\n",
+                    "type": "number",
+                    "format": "float",
+                    "example": 3
+                  },
+                  "measureAmount": {
+                    "description": "量測點數量\n",
+                    "type": "integer"
+                  },
+                  "rangeSpec": {
+                    "description": "容忍值範圍(量測點數量需>1)\n",
+                    "type": "integer",
+                    "format": "float",
+                    "example": 10
+                  },
+                  "sampleNumber": {
+                    "description": "抽檢數量\n",
+                    "type": "integer",
+                    "format": "float",
+                    "example": 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳更新的行數"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "刪除量測點參數",
+        "operationId": "delete-config",
+        "tags": [
+          "config"
+        ],
+        "parameters": [
+          {
+            "name": "UUID",
+            "in": "query",
+            "description": "量測點參數的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回傳刪除成功比數"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "chart",
+      "description": "圖表資訊"
+    },
+    {
+      "name": "config",
+      "description": "量測點參數"
+    },
+    {
+      "name": "history",
+      "description": "量測資訊"
+    },
+    {
+      "name": "rule",
+      "description": "量測檢查規則"
+    },
+    {
+      "name": "instrument",
+      "description": "量測儀器"
+    },
+    {
+      "name": "dashboard",
+      "description": "儀表板"
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.4.0",
+    "title": "SPC Backend API",
+    "contact": {
+      "name": "DOTZERO",
+      "email": "info@dotzero.tech"
+    },
+    "description": "this api is for spc <br>it will use token to get any data belong your tenant"
+  },
+  "paths": {
+    "/v1/rule/": {
+      "get": {
+        "summary": "取得管制圖的規則",
+        "operationId": "getSpecRule",
+        "tags": [
+          "rule"
+        ],
+        "responses": {
+          "200": {
+            "description": "規則的列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/capability": {
+      "get": {
+        "summary": "取得CPK&PPK",
+        "operationId": "getControlChartData",
+        "tags": [
+          "chart"
+        ],
+        "parameters": [
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "工序報工歷史資料(workOrderHistory) 的開工時間\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2017-02-01T16:26:46Z"
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "工序報工歷史資料(workOrderHistory) 的完工時間\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2021-05-04T10:47:32Z"
+          },
+          {
+            "name": "spcMeasurePointConfigUUID",
+            "in": "query",
+            "description": "量測點參數的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "7202a1e7-346d-11eb-8118-3ee8fbec59ed"
+          },
+          {
+            "name": "workOrderOpHistoryUUID",
+            "in": "query",
+            "description": "工序報工歷史資料的UUID\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65"
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "要不要排序\n",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "none",
+                "device",
+                "workOrderOpHistory"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "管制圖的資訊",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpcMeasurePointHistorys"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "chart",
+      "description": "圖表資訊"
+    },
+    {
+      "name": "config",
+      "description": "量測點參數"
+    },
+    {
+      "name": "history",
+      "description": "量測資訊"
+    },
+    {
+      "name": "rule",
+      "description": "量測檢查規則"
+    },
+    {
+      "name": "instrument",
+      "description": "量測儀器"
+    },
+    {
+      "name": "dashboard",
+      "description": "儀表板"
+    }
+  ]
+}
