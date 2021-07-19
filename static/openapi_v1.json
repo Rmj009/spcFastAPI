@@ -1,24 +1,15 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "1.4.0",
+    "version": "spc-stat-oas3",
     "title": "spc-spec",
-    "contact": {
-      "name": "DOTZERO",
-      "email": "info@dotzero.tech"
-    },
     "description": "An API to spc"
   },
-  "servers": [
-    {
-      "url": "http://localhost:5000"
-    }
-  ],
   "paths": {
     "/v1/nelson": {
       "get": {
         "tags": [
-          "statistics"
+          "spec"
         ],
         "summary": "取得統計結果",
         "operationId": "getSpec",
@@ -29,9 +20,9 @@
             "description": "工序報工歷史資料(workOrderHistory) 的開工時間 2020-05-20T16:26:46Z\n",
             "schema": {
               "type": "string",
-              "format": "date-time"
-            },
-            "example": "2020-05-20T16:26:46Z"
+              "format": "date-time",
+              "example": "2020-05-20T16:26:46Z"
+            }
           },
           {
             "name": "endTime",
@@ -39,9 +30,9 @@
             "description": "工序報工歷史資料(workOrderHistory) 的完工時間 2020-05-20T16:26:46Z\n",
             "schema": {
               "type": "string",
-              "format": "date-time"
-            },
-            "example": "2021-01-15T10:47:32Z"
+              "format": "date-time",
+              "example": "2021-01-15T10:47:32Z"
+            }
           },
           {
             "name": "spcMeasurePointConfigUUID",
@@ -52,9 +43,9 @@
               "format": "uuid",
               "required": [
                 "uuid"
-              ]
-            },
-            "example": "7202a1e7-346d-11eb-8118-3ee8fbec59ed"
+              ],
+              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
+            }
           },
           {
             "name": "workOrderOpHistoryUUID",
@@ -62,9 +53,9 @@
             "description": "工序報工歷史資料的UUID\n",
             "schema": {
               "type": "string",
-              "format": "uuid"
-            },
-            "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65"
+              "format": "uuid",
+              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
+            }
           }
         ],
         "responses": {
@@ -94,7 +85,7 @@
     "/v1/capability": {
       "get": {
         "tags": [
-          "statistics"
+          "capability"
         ],
         "summary": "取得統計結果",
         "operationId": "getCapability",
@@ -105,9 +96,9 @@
             "description": "工序報工歷史資料(workOrderHistory) 的開工時間 2020-05-20T16:26:46Z\n",
             "schema": {
               "type": "string",
-              "format": "date-time"
-            },
-            "example": "2020-05-20T16:26:46Z"
+              "format": "date-time",
+              "example": "2020-05-20T16:26:46Z"
+            }
           },
           {
             "name": "endTime",
@@ -115,9 +106,9 @@
             "description": "工序報工歷史資料(workOrderHistory) 的完工時間 2020-05-20T16:26:46Z\n",
             "schema": {
               "type": "string",
-              "format": "date-time"
-            },
-            "example": "2021-01-15T10:47:32Z"
+              "format": "date-time",
+              "example": "2021-01-15T10:47:32Z"
+            }
           },
           {
             "name": "spcMeasurePointConfigUUID",
@@ -128,9 +119,9 @@
               "format": "uuid",
               "required": [
                 "uuid"
-              ]
-            },
-            "example": "7202a1e7-346d-11eb-8118-3ee8fbec59ed"
+              ],
+              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
+            }
           },
           {
             "name": "workOrderOpHistoryUUID",
@@ -138,9 +129,9 @@
             "description": "工序報工歷史資料的UUID\n",
             "schema": {
               "type": "string",
-              "format": "uuid"
-            },
-            "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65"
+              "format": "uuid",
+              "example": "d5473fb7-42ac-4794-bf4d-358f4ddccd1c"
+            }
           }
         ],
         "responses": {
@@ -168,10 +159,93 @@
       }
     }
   },
-  "tags": [
-    {
-      "name": "statistics",
-      "description": "檢查nelson規則 && 量測點統計製程指標"
+  "definitions": {
+    "spc-spec": null,
+    "properties": {
+      "good": {
+        "type": "number"
+      },
+      "defect": {
+        "type": "number"
+      },
+      "totalNum": {
+        "type": "number"
+      },
+      "goodRate": {
+        "type": "number"
+      },
+      "USL": {
+        "type": "number"
+      },
+      "LSL": {
+        "type": "number"
+      },
+      "UCL": {
+        "type": "number"
+      },
+      "LCL": {
+        "type": "number"
+      },
+      "sampleStandardDeviation": {
+        "type": "number"
+      },
+      "target": {
+        "type": "number"
+      },
+      "mean": {
+        "type": "number"
+      },
+      "range": {
+        "type": "number"
+      },
+      "CPU": {
+        "type": "number"
+      },
+      "CPL": {
+        "type": "number"
+      },
+      "CP": {
+        "type": "number"
+      },
+      "CK": {
+        "type": "number"
+      },
+      "CPK": {
+        "type": "number"
+      },
+      "PPK": {
+        "type": "number"
+      }
+    },
+    "capability": {
+      "properties": null,
+      "value": {
+        "type": "number"
+      },
+      "rule1": {
+        "type": "number"
+      },
+      "rule2": {
+        "type": "number"
+      },
+      "rule3": {
+        "type": "number"
+      },
+      "rule4": {
+        "type": "number"
+      },
+      "rule5": {
+        "type": "number"
+      },
+      "rule6": {
+        "type": "number"
+      },
+      "rule7": {
+        "type": "number"
+      },
+      "rule8": {
+        "type": "number"
+      }
     }
-  ]
+  }
 }

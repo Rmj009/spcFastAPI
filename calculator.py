@@ -1,8 +1,5 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-import statistics as stat
 
 """
 References: 
@@ -10,45 +7,43 @@ Douglas C. Montgomery-Introduction to statistical quality control 7th edtition-W
 Part III chapter 8.3, p362.-p372
 """
 class Calculator(object):
-    def __init__(self,mean,variance,sojourn):
-        self.mean = mean
-        self.variance = variance
-        self.sojourn = sojourn
-    def __del__(self,object):  #1>>> cleanup the seq, 2>>> return the seq after drop point(s)
-        print('drop points...')
-        dropindex = np.argwhere(max(object) or min(object))
-        sequences = np.delete(object,object[1]) #specific points
-        return sequences
+    # def __init__(self,tbls,sojourn):
+    #     self.tbls = tbls
+    #     self.sojourn = sojourn
+    # def __del__(self,object):  #1>>> cleanup the seq, 2>>> return the seq after drop point(s)
+    #     print('drop points...')
+    #     dropindex = np.argwhere(max(object) or min(object))
+    #     sequences = np.delete(object,object[1]) #specific points
+    #     return sequences
+
+    # def __repr__(self) -> str:
+    #     return super().__repr__()
 
     def calc(datatables):
         try:
-            # datatables = np.delete(datatables['valuelst'],np.argwhere(datatables['valuelst'] == 9) )
             datatables = datatables[datatables.valuelst != -88888888]
-            print('/Dataframe:/',datatables.shape,datatables.head(),sep='\n')
+            # print('###Dataframe###',datatables.head(),sep='\n')
             goodNum = len(datatables['goodlst']) 
             defectNum = len(datatables[datatables.defectlst > 0])
             totalNum = goodNum + defectNum
-            goodRate = goodNum / totalNum 
-            defectRate = defectNum / totalNum
-            Target = datatables.std_v[1]
-            print('Target'.format(Target))
-            USL = (datatables.iloc[1,4] + Target)
-            LSL = (Target - datatables.iloc[1,3])
+            goodRate = goodNum / totalNum
+            Target = datatables.stdValue[0]
+            USL = Target + datatables['usllst'][0]
+            LSL = Target - datatables['lsllst'][0]
             LCL = (LSL + Target)/2
             UCL = (USL + Target)/2
             rangespec = USL - LSL
-            arr = datatables['valuelst']
+            arr = datatables['valuelst'][:]
             ngroup = int(datatables.shape[0])/int(datatables.amount[1])
             if (ngroup.is_integer() == False):
-                cpkarr = np.array_split(arr,ngroup)
-                arrFront = [np.mean(i) for i in cpkarr[:-2]]
-                mergerest = np.concatenate((cpkarr[-2],cpkarr[-1]), axis = None)
-                arrBack = [np.mean(i) for i in mergerest]
-                arrmean = arrFront.append(arrBack)
-                sigmaCpk = np.std(arrmean,ddof=1) #pd.std()
+                cpkarr = datatables['valuelst'].sort_index(axis = 0,ascending = False) #coz the array_split method 
+                cpkarr = np.array_split(cpkarr,datatables.shape[0]//datatables.amount[1])
+                cpkarrMEAN = [np.mean(i) for i in cpkarr]
+                sigmaCpk = np.std(cpkarrMEAN,ddof=1) #pd.std() >>> //(n)
             else:
-                cpkarr = np.array_split(arr,ngroup)
-                sigmaCpk = np.std(cpkarr,ddof=1)
+                cpkarr = np.array_split(datatables['valuelst'],ngroup)
+                cpkarrMEAN = [np.mean(i) for i in cpkarr]
+                sigmaCpk = np.std(cpkarrMEAN,ddof=1) # numpy standard deviation >>> //(n-1)
             cp_mean = np.mean(datatables['valuelst'])
             sigmaPpk = np.std(datatables['valuelst'],ddof=1)
             if (sigmaCpk == 0) or (sigmaPpk == 0):
@@ -60,22 +55,22 @@ class Calculator(object):
             Cpu = (USL - cp_mean) / (sigmaCpk*3)
             Cpl = (cp_mean - LSL) / (sigmaCpk*3)
             Cpk = np.min([Cpu,Cpl]) 
-            # Cpk = abs((1-Ck)*Cp)
+            # Cpk = abs((1-Ck)*Cp) // calculation requires to be discussed
             Ppu = (UCL - cp_mean) / (sigmaPpk*3)
             Ppl = (cp_mean - LCL) / (sigmaPpk*3)
             Ppk = np.min([Ppu,Ppl]) 
-
-            CPR = goodNum,totalNum,goodRate,USL,LSL,UCL,LCL,cp_mean, Target,rangespec, Cpu, Cpl, Cp, Ck, Cpk, Ppk, # capability ratio
-            keys = ["good","totalNum","goodRate","USL","LSL","UCL","LCL","overallmean","target","range","Cpu","Cpl","Cp","Ck","Cpk","Ppk"]
+            # capability ratio
+            CPR = goodNum,totalNum,goodRate ,USL,LSL,UCL,LCL,cp_mean,Target ,rangespec, Cpu, Cpl, Cp, Ck, Cpk, Ppk
+            keys = ["good","totalNum","goodRate","USL","LSL","UCL","LCL","overallMean","target","range","Cpu","Cpl","Cp","Ck","Cpk","Ppk"]
             capability = dict(zip(keys, CPR))
             ### Reference :https://en.wikipedia.org/wiki/Process_performance_index
-
-            # print(capability)
             return capability # total 17
-        except ZeroDivisionError() as e:
+        except ZeroDivisionError as e:
             print('sigma zero result from variance: '+ str(e))
             print("fix infinity", None)
-
+        except Exception as error:
+            print('CALC_ERROR',error)
+            return error
 
 # ptV = nmp[:,11]
 # trendObj = {'all_vals': ptV,'format_1': np.zeros(len(ptV)),'format_2': np.zeros(len(ptV)),'format_3': np.zeros(len(ptV)),'format_4': np.zeros(len(ptV))}
@@ -187,8 +182,3 @@ class western(Calculator):
             plt.axhline(y=upper, linewidth=0.5, color=color)
             plt.axhline(y=lower, linewidth=0.5, color=color)
         return
-
-
-# if __name__ == "__main__":
-#     print("open")
-#     calc({"valuelst":100,"goodlst":100 ,"defectlst":88 ,"lslspec": 60,"uslspec": 10})

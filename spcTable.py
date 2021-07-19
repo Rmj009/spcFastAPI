@@ -1,12 +1,13 @@
-from flask import Flask, request, render_template, abort, url_for, json, jsonify, escape
-from sqlalchemy import select, column, join, create_engine,exc
+from re import A
+import json
+from sqlalchemy import create_engine,exc #select, column, join,
 from sqlalchemy.orm import sessionmaker, aliased
 from sqlalchemy.exc import DatabaseError
+# from sqlalchemy.orm.query import QueryContext
 from calculator import *
 from nelsonRules import *
 from alchemy_db import *
-from setting import *
-import threading
+from model.setting import *
 import os
 db = SQLAlchemy() # db.init_app(app)
 # engine = create_engine('postgresql://postgres:edge9527@localhost:5432/dev_tenant')
@@ -20,6 +21,8 @@ connection = engine.connect()
 
 """
 # app.config['SQLALCHEMY_DATABASE_URI'] = [DB_TYPE]+[DB_CONNECTOR]://[USERNAME]:[PASSWORD]@[HOST]:[PORT]/[DB_NAME]
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:edge9527@host.docker.internal:5432/dev_tenant'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:edge9527@aaaaa:5432/dev_tenant'
 
 Definition of the table format
 1. spc_measure_point_config
@@ -36,9 +39,10 @@ cpl,cp,cpk,ppk,..
 class SpcTable:
     def __init__(self,rule):
         self.rule = rule
-        self.array = array
-    # self.firstvar = startTime
-    # self.lastvar = endTime
+        
+    def __repr__(self) -> str:
+        print(f'Query and wrap up dataflow')
+        return super().__repr__()
     def drawchart1(datapoints):
         #---------invoke western------------
         # datapoints = valuelst
@@ -69,42 +73,42 @@ class SpcTable:
         plt.legend()
         plt.ylim(0,25)
         # # plt.plot(datapoints)
-        plt.savefig('static/img/control-chart.png')
+        # plt.savefig('static/img/control-chart.png')
         # # g = sns.relplot(x = 'all_vals', y = 'format_1', data = trendObj, kind="line")
         # # g.fig.autofmt_xdate()
         plt.show()
 
 
-    def drawchart2(original):
-        """Plot RawData"""
-        text_offset = 70
-        mean = np.mean(original)
-        sigma = np.std(original)
-        # print("###",[mean,sigma])
-        fig = plt.figure(figsize=(20, 10))
-        ax1 = fig.add_subplot(1, 1, 1)
-        ax1.plot(original, color='blue', linewidth=1.5)
+    # def drawchart2(original):
+    #     """Plot RawData"""
+    #     text_offset = 70
+    #     mean = np.mean(original)
+    #     sigma = np.std(original)
+    #     # print("###",[mean,sigma])
+    #     fig = plt.figure(figsize=(20, 10))
+    #     ax1 = fig.add_subplot(1, 1, 1)
+    #     ax1.plot(original, color='blue', linewidth=1.5)
 
-        # plot mean
-        ax1.axhline(mean, color='r', linestyle='--', alpha=0.5)
-        ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),
-                    xytext=(text_offset, 0), fontsize=18)
+    #     # plot mean
+    #     ax1.axhline(mean, color='r', linestyle='--', alpha=0.5)
+    #     ax1.annotate('$\overline{x}$', xy=(len(original), mean), textcoords=('offset points'),
+    #                 xytext=(text_offset, 0), fontsize=18)
 
-        # plot 1-3 standard deviations
-        sigma_range = np.arange(1,4)
-        for i in range(len(sigma_range)):
-            ax1.axhline(mean + (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
-            ax1.axhline(mean - (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
-            ax1.annotate('%s $\sigma$' % sigma_range[i], xy=(len(original), mean + (sigma_range[i] * sigma)),
-                        textcoords=('offset points'),
-                        xytext=(text_offset, 0), fontsize=18)
-            ax1.annotate('-%s $\sigma$' % sigma_range[i],
-                        xy=(len(original), mean - (sigma_range[i] * sigma)),
-                        textcoords=('offset points'),
-                        xytext=(text_offset, 0), fontsize=18)
-        # plt.show()
-        plt.savefig('static/img/classicialcc.png')
-        return
+    #     # plot 1-3 standard deviations
+    #     sigma_range = np.arange(1,4)
+    #     for i in range(len(sigma_range)):
+    #         ax1.axhline(mean + (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+    #         ax1.axhline(mean - (sigma_range[i] * sigma), color='black', linestyle='-', alpha=(i+1)/10)
+    #         ax1.annotate('%s $\sigma$' % sigma_range[i], xy=(len(original), mean + (sigma_range[i] * sigma)),
+    #                     textcoords=('offset points'),
+    #                     xytext=(text_offset, 0), fontsize=18)
+    #         ax1.annotate('-%s $\sigma$' % sigma_range[i],
+    #                     xy=(len(original), mean - (sigma_range[i] * sigma)),
+    #                     textcoords=('offset points'),
+    #                     xytext=(text_offset, 0), fontsize=18)
+    #     # plt.show()
+    #     plt.savefig('static/img/classicialcc.png')
+    #     return
 
     def queryfunc(startTime,endTime,wooh_uuid,smpc_uuid): 
         table_smpc = aliased(spc_measure_point_config) # operation_uuid <=> table_opwh
@@ -127,39 +131,50 @@ class SpcTable:
                 queryResult = [row for row in session.execute(yy)]
                 return queryResult
 
-        except exc.SQLAlchemyError as e:
-                print("eeeeeeeeeeeerror type: ",type(e),str(e))
-                raise None
         except DatabaseError:
             db.session.rollback()
-            handle_sqlalchemy_database_error()
-    
-    def dataPipline(tables):
-        valuelst = [item[0] for item in tables]
-        goodlst = [item[1] for item in tables]
-        defectlst = [item[2] for item in tables]
-        lsllst = [item[3] for item in tables]
-        usllst = [item[4] for item in tables]
-        amount = [item[5] for item in tables] # measure_amount
-        std_v = [item[6] for item in tables] # target
-        CapabilityColumn = ["valuelst","goodlst","defectlst","lsllst","usllst","amount","std_v"]
-        measurelst = [valuelst,goodlst,defectlst,lsllst,usllst,amount,std_v]
-        datatables = pd.DataFrame(dict(zip(CapabilityColumn, measurelst)))
-        return datatables 
-    
+            print('dbERROR_session',db.session.rollback())
+            # handle_sqlalchemy_database_error()
+        except exc.SQLAlchemyError as e:
+            print("error type: ",type(e),str(e))
+            db.session.rollback()
+            raise None
+        except Exception as errors:
+            print('Finalerror',errors)
+            db.session.rollback()
+            return ' Failure :',errors
+        else:
+            db.session.rollback()
+    """
+    Calculate metrics after querying the datasets 
+    """
     def CPRfunc(b,e,wuuid,suuid):
         queryResult = SpcTable.queryfunc(startTime=b, endTime=e, wooh_uuid=wuuid, smpc_uuid=suuid)
-        datatables = SpcTable.dataPipline(tables=queryResult)
+        CapabilityCol = ["valuelst","goodlst","defectlst","lsllst","usllst","amount","stdValue"]
+        Query_context = pd.DataFrame()
+        for i in range(len(CapabilityCol)):
+            Query_context[CapabilityCol[i]] = [item[i] for item in queryResult]
         # t = threading.Thread(target = apply_rules, args=(qResult['valuelst'],'all',2) ,daemon=True);t.start()
-        SpcTable.drawchart2(original=datatables.valuelst) #draw and save the raw
-        capablityResult = Calculator.calc(datatables=datatables)
-        return capablityResult
+        # # SpcTable.drawchart2(original=datatables.valuelst) #draw and save the raw
+        CapabilityResult = Calculator.calc(datatables = Query_context)
+        return CapabilityResult
 
-    def NelsonDraw(b,e,wuuid,suuid):
+    def Nelsonfunc(b,e,wuuid,suuid):
         queryResult = SpcTable.queryfunc(startTime=b, endTime=e, wooh_uuid=wuuid, smpc_uuid=suuid)
-        datatables  = SpcTable.dataPipline(tables=queryResult)
-        nelsonBool = apply_rules(original=datatables.valuelst) # markup points after rules verified 
+        CapabilityCol = ["valuelst","goodlst","defectlst","lsllst","usllst","amount","stdValue"]
+        Query_context = pd.DataFrame()
+        for i in range(len(CapabilityCol)):
+            Query_context[CapabilityCol[i]] = [item[i] for item in queryResult]
+        
+        nelsonBool = apply_rules(original=Query_context.valuelst) # markup points after rules verified 
         df_list = nelsonBool.values.tolist()
+        NelsonCol = ["data","rule1","rule2","rule3","rule4","rule5","rule6","rule7","rule8"]
+        """
+        Another parsing method requires to be mentioned.
+         NelsonContext = pd.DataFrame()
+         for j in range(len(NelsonCol)):
+             NelsonContext[NelsonCol[j]] = [item[j] for item in df_list]
+        """
         data = [item[0] for item in df_list]
         rule1 = [item[1] for item in df_list]
         rule2 = [item[2] for item in df_list]
@@ -169,10 +184,9 @@ class SpcTable:
         rule6 = [item[6] for item in df_list]
         rule7 = [item[7] for item in df_list]
         rule8 = [item[8] for item in df_list]
-        columnName = ["data","rule1","rule2","rule3","rule4","rule5","rule6","rule7","rule8"]
         columnValue = [data,rule1,rule2,rule3,rule4,rule5,rule6,rule7,rule8]
-        rulelst = dict(zip(columnName,columnValue))
-        JSONP_data = jsonify(rulelst)
-        return JSONP_data
+        NelsonContext = dict(zip(NelsonCol,columnValue))
+        # NelsonContext = json.loads(NelsonContext.to_json(orient="split"))
+        return NelsonContext
 
   

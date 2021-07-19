@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 
-df = pd.read_csv('workbook_name.csv', sep=',',header=0); nmp = df.to_numpy() ;data = nmp[:,11]#; data = pd.DataFrame(nmp[:,11])
+# df = pd.read_csv('workbook_name.csv', sep=',',header=0); nmp = df.to_numpy() ;data = nmp[:,11]#; data = pd.DataFrame(nmp[:,11])
 # data = spcTable.data
 """
 REFERENCE:
@@ -83,6 +83,7 @@ def plot_rules(data, chart_type=2):
 # plot_rules(data=data)
 
 def apply_rules(original, rules='all', chart_type=2):
+    
     data_mean = np.mean(original)
     data_sig = np.std(original)
     if rules == 'all':
@@ -90,7 +91,6 @@ def apply_rules(original, rules='all', chart_type=2):
     df = pd.DataFrame(original)
     for i in range(len(rules)):
         df[rules[i].__name__] = rules[i](original= original, mean = data_mean, sigma = data_sig)
-    # print('dddfdfdf',df)
     # fig = plot_rules(df, chart_type)
 
     return df #, fig
@@ -363,8 +363,7 @@ def drawchart2(original):
     plt.savefig('static/img/classicialcc2.png')
     return fig 
 
-
-result = apply_rules(original=data)
+# result = apply_rules(original=data)
 # # print('rrrr',enumerate(result))
 # # sns.set_style('whitegrid')
 # # sns.kdeplot([j for i,j in enumerate(result[0])], bw=0.5)
@@ -373,7 +372,4 @@ result = apply_rules(original=data)
 
 # drawchart2(original=result[0])
 # plt.show()
-print('result',result.head(), sep='/n')
-
-# for index, row in df.iterrows():
-#     print(result['index'])
+# print('result',result.head(), sep='/n')

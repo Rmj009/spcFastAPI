@@ -1,20 +1,17 @@
 # export DATABASE_URL='postgres://localhost:5432/
 from datetime import datetime
-import os,html,sys,traceback
-from flask import Flask, request, render_template, abort, url_for, redirect, json, jsonify, escape
-from flask_cors import CORS
-# from flask_jsonpify import jsonpify
+import os
+# ,html,sys,traceback
+from flask import Flask, request, render_template
+from flask_sqlalchemy import SQLAlchemy
+# from flask_cors import CORS
 from spcTable import SpcTable
 from errors import *
-
-
+# from config import *
 app = Flask(__name__, static_url_path='')
-# cors = CORS(app, resources={r"/capability/*"})
-
 app.config["DEBUG"] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:edge9527@host.docker.internal:5432/dev_tenant'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:edge9527@aaaaa:5432/dev_tenant'
+
 
 #------------CONFIGURATION--------------
 # print(os.getcwd()) # print the pwd status
@@ -41,33 +38,40 @@ def index():
     except Exception as e:
       print('type of:',type(e))
 
-@app.route('/api-docs/')
+@app.route('/api-docs')
 def get_docs():
     print('sending docs')
     return render_template('swaggerui.html')
 
+# GOstistics_api_format:
+# go run sender.go "210505a7-e015-46b8-a799-4b3a56b2070b.2dfb757b-1152-46c5-a4b3-fa532cfc5168.*.*.group1-t0yq0" '{"createTime": "2021-05-31T03:05:37.499+00:00","metric": {"CP": 0.5,"CK":6}}'
+
 @app.route("/v1/capability", methods=['GET'])
 def capability():
   # query params
-  b = request.args.get('startTime') # sync to cloud
-  e = request.args.get('endTime') 
-  wuuid = request.args.get('workOrderOpHistoryUUID')
-  suuid = request.args.get('spcMeasurePointConfigUUID')
-  try:  
-    if (suuid == None) or (len(suuid) == 0):
-      result = 'config point error'
-      return result, 400
-    elif (b == None) or (len(b) == 0):
-      result = 'start time error'
+  try:
+    b = request.args.get('startTime') # sync to cloud
+    e = request.args.get('endTime') 
+    wuuid = request.args.get('workOrderOpHistoryUUID')
+    suuid = request.args.get('spcMeasurePointConfigUUID')  
+    
+    if (b == None) or (len(b) == 0):
+      result = 'startTimeError'
       return result, 400
     elif (e == None) or (len(e) == 0):
-      result = 'end time error'
+      result = 'endTimeError'
+      return result, 400
+    elif (suuid == None) or (len(suuid) == 0):
+      result = 'configPointErr'
+      return result, 400
+    elif (wuuid == None) or (len(wuuid) == 0):
+      result = 'wuuidError'
       return result, 400
     else:
       result = SpcTable.CPRfunc(b=b, e=e, wuuid=wuuid, suuid=suuid)# (startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
       return result, 200
   except Exception as errors:
-    return 'Query Fail', 500
+    return ' Failure %s:',errors, 500
 
 @app.route("/v1/nelson", methods=['GET'])
 def nelson():
@@ -86,15 +90,18 @@ def nelson():
       result = 'end time error'
       return result, 400
     else:
-      result = SpcTable.NelsonDraw(b=b, e=e, wuuid=wuuid, suuid=suuid)
+      result = SpcTable.Nelsonfunc(b=b, e=e, wuuid=wuuid, suuid=suuid)
       return result, 200
   except Exception as errors:
-    return 'Query Fail', 500
+
+    print('errorrr',errors)
+    return 'Query Fail',errors, 500
 
 #-----------------ENTRANCE-----------------------
 @app.route('/', methods=['GET'])
 def home():
-  return 'ok', 200
+  return 'API ok', 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True, port=os.getenv('PORT')) #os.getenv('PORT')
+  app.debug = True
+  app.run(host=os.getenv('HOST'), debug=True, port=os.getenv('PORT'))

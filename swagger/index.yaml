@@ -33,7 +33,7 @@ paths:
   /api/docs/:
     $ref: ./paths/spc-chart-data/index.yaml
   /capability:
-    $ref: ./paths/v1/nelson/index.yaml
+    $ref: ./paths/spc-spec/index.yaml
 
 tags:
   - name: spec
