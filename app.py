@@ -69,7 +69,7 @@ def capability():
       result = 'wuuidError'
       return result, 400
     else:
-      result = SpcTable.CPRfunc(beginTime=begin, finalTime=endtime, wuuid=wuuid, suuid=suuid)# (startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
+      result = SpcTable.CPRfunc(beginTime=begin, finalTime=endtime, wuuid=wuuid, suuid=suuid)
       return result, 200
   except Exception as errors:
     return ' Failure %s:',errors, 500
