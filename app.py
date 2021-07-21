@@ -65,9 +65,6 @@ def capability():
     elif (suuid == None) or (len(suuid) == 0):
       result = 'configPointErr'
       return result, 400
-    elif (wuuid == None) or (len(wuuid) == 0):
-      result = 'wuuidError'
-      return result, 400
     else:
       result = SpcTable.CPRfunc(beginTime=begin, finalTime=endtime, wuuid=wuuid, suuid=suuid)
       return result, 200
