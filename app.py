@@ -4,6 +4,7 @@ import os
 # ,html,sys,traceback
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
+from numpy import e
 # from flask_cors import CORS
 from spcTable import SpcTable
 from errors import *
@@ -50,15 +51,15 @@ def get_docs():
 def capability():
   # query params
   try:
-    b = request.args.get('startTime') # sync to cloud
-    e = request.args.get('endTime') 
+    begin = request.args.get('startTime') # sync to cloud
+    endtime = request.args.get('endTime') 
     wuuid = request.args.get('workOrderOpHistoryUUID')
     suuid = request.args.get('spcMeasurePointConfigUUID')  
     
-    if (b == None) or (len(b) == 0):
+    if (begin == None) or (len(begin) == 0):
       result = 'startTimeError'
       return result, 400
-    elif (e == None) or (len(e) == 0):
+    elif (endtime == None) or (len(endtime) == 0):
       result = 'endTimeError'
       return result, 400
     elif (suuid == None) or (len(suuid) == 0):
@@ -68,33 +69,33 @@ def capability():
       result = 'wuuidError'
       return result, 400
     else:
-      result = SpcTable.CPRfunc(b=b, e=e, wuuid=wuuid, suuid=suuid)# (startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
+      result = SpcTable.CPRfunc(b=begin, e=endtime, wuuid=wuuid, suuid=suuid)# (startTime=b,endTime=e,wooh_uuid=wuuid,smpc_uuid=suuid)
       return result, 200
   except Exception as errors:
     return ' Failure %s:',errors, 500
 
 @app.route("/v1/nelson", methods=['GET'])
 def nelson():
-  b = request.args.get('startTime') # sync to cloud
-  e = request.args.get('endTime') 
+  begin = request.args.get('startTime') # sync to cloud
+  endtime = request.args.get('endTime') 
   wuuid = request.args.get('workOrderOpHistoryUUID')
   suuid = request.args.get('spcMeasurePointConfigUUID')
   try:
     if (suuid == None) or (len(suuid) == 0):
       result = 'config point error'
       return result, 400
-    elif (b == None) or (len(b) == 0):
+    elif (begin == None) or (len(begin) == 0):
       result = 'start time error'
       return result, 400
-    elif (e == None) or (len(e) == 0):
+    elif (endtime == None) or (len(endtime) == 0):
       result = 'end time error'
       return result, 400
     else:
-      result = SpcTable.Nelsonfunc(b=b, e=e, wuuid=wuuid, suuid=suuid)
+      result = SpcTable.Nelsonfunc(b=begin, e=endtime, wuuid=wuuid, suuid=suuid)
       return result, 200
   except Exception as errors:
 
-    print('errorrr',errors)
+    print('error',errors)
     return 'Query Fail',errors, 500
 
 #-----------------ENTRANCE-----------------------
