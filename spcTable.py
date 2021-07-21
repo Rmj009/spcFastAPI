@@ -156,11 +156,17 @@ class SpcTable:
             Query_context[CapabilityCol[i]] = [item[i] for item in queryResult]
         # t = threading.Thread(target = apply_rules, args=(qResult['valuelst'],'all',2) ,daemon=True);t.start()
         # # SpcTable.drawchart2(original=datatables.valuelst) #draw and save the raw
-        CapabilityResult = Calculator.calc(datatables = Query_context)
+        try:
+            CapabilityResult = Calculator.calc(datatables = Query_context)
+        except Exception as errors:
+            raise f'Calcu Failure: %s{0}'.format(errors)
         return CapabilityResult
 
     def Nelsonfunc(b,e,wuuid,suuid):
-        queryResult = SpcTable.queryfunc(startTime=b, endTime=e, wooh_uuid=wuuid, smpc_uuid=suuid)
+        try:
+            queryResult = SpcTable.queryfunc(startTime=b, endTime=e, wooh_uuid=wuuid, smpc_uuid=suuid)
+        except Exception as errors:
+            raise f'NelsonQuery Failure:{0}'.format(errors)
         CapabilityCol = ["valuelst","goodlst","defectlst","lsllst","usllst","amount","stdValue"]
         Query_context = pd.DataFrame()
         for i in range(len(CapabilityCol)):
