@@ -148,8 +148,8 @@ class SpcTable:
     """
     Calculate metrics after querying the datasets 
     """
-    def CPRfunc(b,e,wuuid,suuid):
-        queryResult = SpcTable.queryfunc(startTime=b, endTime=e, wooh_uuid=wuuid, smpc_uuid=suuid)
+    def CPRfunc(beginTime,finalTime,wuuid,suuid):
+        queryResult = SpcTable.queryfunc(startTime=beginTime, endTime=finalTime, wooh_uuid=wuuid, smpc_uuid=suuid)
         CapabilityCol = ["valuelst","goodlst","defectlst","lsllst","usllst","amount","stdValue"]
         Query_context = pd.DataFrame()
         for i in range(len(CapabilityCol)):
@@ -162,9 +162,9 @@ class SpcTable:
             raise f'Calcu Failure: %s{0}'.format(errors)
         return CapabilityResult
 
-    def Nelsonfunc(b,e,wuuid,suuid):
+    def Nelsonfunc(beginTime,finalTime,wuuid,suuid):
         try:
-            queryResult = SpcTable.queryfunc(startTime=b, endTime=e, wooh_uuid=wuuid, smpc_uuid=suuid)
+            queryResult = SpcTable.queryfunc(startTime=beginTime, endTime=finalTime, wooh_uuid=wuuid, smpc_uuid=suuid)
         except Exception as errors:
             raise f'NelsonQuery Failure:{0}'.format(errors)
         CapabilityCol = ["valuelst","goodlst","defectlst","lsllst","usllst","amount","stdValue"]
