@@ -1,8 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+templates/
 
 .env
 
 trail.sql
 
+spcchart.py
+config.py
 spcchart.py

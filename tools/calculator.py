@@ -33,7 +33,6 @@ class Calculator(object):
             LCL = (LSL + Target)/2
             UCL = (USL + Target)/2
             rangespec = USL - LSL
-            arr = datatables['valuelst'][:]
             ngroup = int(datatables.shape[0])/int(datatables.amount[1])
             if (ngroup.is_integer() == False):
                 cpkarr = datatables['valuelst'].sort_index(axis = 0,ascending = False) #coz the array_split method 

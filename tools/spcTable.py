@@ -4,8 +4,8 @@ from sqlalchemy import create_engine,exc #select, column, join,
 from sqlalchemy.orm import sessionmaker, aliased
 from sqlalchemy.exc import DatabaseError
 # from sqlalchemy.orm.query import QueryContext
-from calculator import *
-from nelsonRules import *
+from tools.calculator import Calculator
+from tools.nelsonRules import *
 from alchemy_db import *
 from model.setting import *
 import os
