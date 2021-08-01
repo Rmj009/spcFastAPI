@@ -1,14 +1,16 @@
+from components.alchemy_db import spc_measure_point_config,spc_measure_point_history,work_order_op_history
 from re import A
-import json
+import os,json
 from sqlalchemy import create_engine,exc #select, column, join,
 from sqlalchemy.orm import sessionmaker, aliased
 from sqlalchemy.exc import DatabaseError
+from flask_sqlalchemy import SQLAlchemy
 # from sqlalchemy.orm.query import QueryContext
-from tools.calculator import Calculator
-from tools.nelsonRules import *
-from alchemy_db import *
+from utils.calculator import Calculator
+from utils.nelsonRules import *
 from model.setting import *
-import os
+
+
 db = SQLAlchemy() # db.init_app(app)
 # engine = create_engine('postgresql://postgres:edge9527@localhost:5432/dev_tenant')
 # print(os.getenv('PG_URL'))
@@ -129,7 +131,7 @@ class SpcTable:
             else:
                 yy = j1.filter(table_smph.work_order_op_history_uuid == wooh_uuid)
                 queryResult = [row for row in session.execute(yy)]
-                return queryResult
+            return queryResult
 
         except DatabaseError:
             db.session.rollback()
