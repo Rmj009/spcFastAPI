@@ -168,7 +168,6 @@ class western(Calculator):
     def format_arr(rule):
         rule_arr = 'format_' + str(rule)
         # aa=[index for index,val in enumerate(trendObj[rule_arr]) if val]
-        # print(aa)
         return [index for index,val in enumerate(trendObj[rule_arr]) if val]
 
     def plotAxlines(array):

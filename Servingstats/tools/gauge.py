@@ -1,5 +1,5 @@
 # from tools.calculator import Calculator
-from tools.nelsonRules import *
+from Servingstats.tools.nelsonRules import *
 import numpy as np
 
 
@@ -71,9 +71,9 @@ class Gauge():
     def nelson(points):
         points = [ float(i) for i in points.split(',')]
         nelsonBool = apply_rules(original=points) # markup points after rules verified
-        print(nelsonBool)
+        # print(nelsonBool)
         df_list = nelsonBool.values.tolist()
-        print(df_list)
+        # print(df_list)
         NelsonCol = ["data","rule1","rule2","rule3","rule4","rule5","rule6","rule7","rule8"]
         """
         Another parsing method requires to be mentioned.

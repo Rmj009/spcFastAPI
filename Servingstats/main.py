@@ -11,11 +11,11 @@ from fastapi import Depends, FastAPI
 from fastapi.security import OAuth2PasswordBearer
 
 from pydantic import ValidationError
-from model.models import Capability,Neslson,User
+from Servingstats.model.models import Capability,Neslson,User
 # from tools.spcTable import SpcTable
-from tools.gauge import Gauge
+from Servingstats.tools.gauge import Gauge
 # from errors import *
-from config import *
+# from config import *
 
 app = FastAPI() #create a FastAPI instance:
 """
@@ -43,23 +43,20 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-
-
-# @app.get("/")
-# async def root():
-#     return {"message": "Hello World"}
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 # @app.get("/items/{item_id}")
 # async def read_item(item_id):
 #     return {"item_id": item_id}
 
 
-@app.get('/v1/nelson-new/',response_model=Neslson)
+@app.get('/v2/nelson-new/',response_model=Neslson)
 def GormToNelson(points: str, request: Request):
     client_host = request.client.host
-    # points = requests.args.get(points)
-    print(points)
-    print(type(points))
+    # print(points)
+    # print(type(points))
     try:
         # Capability(points=[33,22,55,22,23,26])
         if (points == None) or (len(points) == 0):
@@ -69,7 +66,6 @@ def GormToNelson(points: str, request: Request):
             result = Gauge.nelson(points)
             return JSONResponse(content=str(result)) #status_code=202,
 
-
     except ValidationError as e:
         print('validationE',e.json())
     except Exception as errors:
@@ -77,7 +73,7 @@ def GormToNelson(points: str, request: Request):
     return 'CalcFail', 500
 
 
-@app.get("/v1/capability-new",response_model=Capability)
+@app.get("/v2/capability-new",response_model=Capability)
 def GormToCPR(points,USL,LSL,good,defect,measureAmount,stdValue):
   try:
     if (points == None) or (len(points) == 0):
@@ -110,15 +106,6 @@ def GormToCPR(points,USL,LSL,good,defect,measureAmount,stdValue):
   except Exception as errors:
     print('error',errors)
     return 'CalcFail', 500
-
-
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     uvicorn.run(app, debug=True)
