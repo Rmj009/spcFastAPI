@@ -43,13 +43,15 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
 
-@app.get("/items/{item_id}")
-async def read_item(item_id):
-    return {"item_id": item_id}
+
+# @app.get("/")
+# async def root():
+#     return {"message": "Hello World"}
+
+# @app.get("/items/{item_id}")
+# async def read_item(item_id):
+#     return {"item_id": item_id}
 
 
 @app.get('/v1/nelson-new/',response_model=Neslson)

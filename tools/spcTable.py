@@ -6,8 +6,8 @@ from sqlalchemy.orm import sessionmaker, aliased
 from sqlalchemy.exc import DatabaseError
 from flask_sqlalchemy import SQLAlchemy
 # from sqlalchemy.orm.query import QueryContext
-from utils.calculator import Calculator
-from utils.nelsonRules import *
+from tools.calculator import Calculator
+from tools.nelsonRules import *
 from model.setting import *
 
 
