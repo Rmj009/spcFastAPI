@@ -1,4 +1,4 @@
-from components.alchemy_db import spc_measure_point_config,spc_measure_point_history,work_order_op_history
+from Servingstats.components.alchemy_db import spc_measure_point_config,spc_measure_point_history,work_order_op_history
 from re import A
 import os,json
 from sqlalchemy import create_engine,exc #select, column, join,
@@ -8,7 +8,6 @@ from flask_sqlalchemy import SQLAlchemy
 # from sqlalchemy.orm.query import QueryContext
 from tools.calculator import Calculator
 from tools.nelsonRules import *
-from model.setting import *
 
 
 db = SQLAlchemy() # db.init_app(app)

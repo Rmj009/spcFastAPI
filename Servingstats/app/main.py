@@ -3,25 +3,45 @@
 https://realpython.com/fastapi-python-web-apis/
 terminal bash$ uvicorn main:app --reload
 """
-import uvicorn
+import uvicorn, time
 from fastapi import FastAPI, Request
 # , File, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi import Depends, FastAPI
 from fastapi.security import OAuth2PasswordBearer
-
 from pydantic import ValidationError
+
+"""
+project.components import
+"""
 from Servingstats.model.models import Capability,Neslson,User
-# from tools.spcTable import SpcTable
+# from Servingstats.tools.spcTable import SpcTable    # fastapi ORM not ready
 from Servingstats.tools.gauge import Gauge
 # from errors import *
 # from config import *
+
 
 app = FastAPI() #create a FastAPI instance:
 """
 # Authorize in the swagger
 """
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    print(response)
+    return response
+
+
+
+
+
+
 @app.get("/items/") 
 async def read_items(token: str = Depends(oauth2_scheme)):
     return {"token": token}
@@ -44,7 +64,7 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 
 
 @app.get("/")
-async def root():
+async def root(string:str):
     return {"message": "Hello World"}
 
 # @app.get("/items/{item_id}")
@@ -107,5 +127,7 @@ def GormToCPR(points,USL,LSL,good,defect,measureAmount,stdValue):
     print('error',errors)
     return 'CalcFail', 500
 
+
+
 if __name__ == "__main__":
-    uvicorn.run(app, debug=True)
+    uvicorn.run(app, debug=True,reload = True,log_level="info")

@@ -14,9 +14,76 @@
       "url": "http://localhost:5000"
     }
   ],
+  "components": {
+    "schemas": {
+      "SpcMeasurePointHistory": {
+        "required": [
+          "UUID"
+        ],
+        "properties": {
+          "UUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "workOrderOpHistoryUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "spcMeasurePointConfigUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "spcMeasureInstrumentUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "measureObjectID": {
+            "type": "integer"
+          },
+          "workerID": {
+            "description": "worker ID",
+            "type": "string"
+          },
+          "value": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT" 
+      }
+    }
+  },
+  "security":[
+    {
+      "BearerAuth": []
+    }
+  ],
   "paths": {
     "/v1/nelson": {
       "get": {
+        "security":[
+          {
+            "BearerAuth": []
+          }
+          
+        ],          
         "tags": [
           "statistics"
         ],
@@ -142,6 +209,157 @@
             },
             "example": "4134d124-ddb0-4ef4-91ba-922710ec7d65"
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "統計結果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nelson-new": {
+      "get": {
+        "security":[
+          {
+            "BearerAuth": []
+          }
+          
+        ],          
+        "tags": [
+          "statistics"
+        ],
+        "summary": "取得統計結果",
+        "operationId": "getSpec",
+        "parameters": [
+          {
+            "name": "points",
+            "in": "query",
+            "description": "量測點",
+            "schema": {
+              "type": "string",
+              "format": "value"
+            },
+            "example": "1,2,3,4,5,6,7,8,9"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "統計結果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/capability-new": {
+      "get": {
+        "security":[
+          {
+            "BearerAuth": []
+          }
+        ],
+        "tags": [
+          "statistics"
+        ],
+        "summary": "取得統計結果",
+        "operationId": "getCapability",
+        "parameters": [
+          {
+            "name": "points",
+            "in": "query",
+            "description": "量測點\n",
+            "schema": {
+              "type": "string",
+              "format": "value"
+            },
+            "example": "10,11,12,12,13,14,13,14,13,14,13,14,13,14"
+          },
+          {
+            "name": "good",
+            "in": "query",
+            "description": "良品\n",
+            "schema": {
+              "type": "string",
+              "format": "value"
+            },
+            "example": "100"          },
+          {
+            "name": "defect",
+            "in": "query",
+            "description": "不良品\n",
+            "schema": {
+              "type": "string",
+              "format": "value"
+            },
+            "example": "3"          },
+          {
+            "name": "LSL",
+            "in": "query",
+            "description": "LowerSpecificationLevel\n",
+            "schema": {
+              "type": "string",
+              "format": "value"
+            },
+            "example": "2"          },
+          {
+            "name": "USL",
+            "in": "query",
+            "description": "UpperSpecificationLevel\n",
+            "schema": {
+              "type": "string",
+              "format": "value"
+            },
+            "example": "5"          },
+          {
+            "name": "measureAmount",
+            "in": "query",
+            "description": "measure amount \n",
+            "schema": {
+              "type": "string",
+              "format": "value"
+            },
+            "example": "4"          },
+          {
+            "name": "stdValue",
+            "in": "query",
+            "description": "Target Values\n",
+            "schema": {
+              "type": "string",
+              "format": "value"
+            },
+            "example": "13"          }
         ],
         "responses": {
           "200": {

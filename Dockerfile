@@ -1,12 +1,16 @@
-FROM python:3.8-slim-buster
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
 
-WORKDIR /app
+WORKDIR /Servingstats/app
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
+
+
+COPY . /Servingstats/app/
+
 
 COPY . .
 ENV PG_URL='postgresql://postgres:edge9527@host.docker.internal:5432/dev_tenant'
 ENV PORT=8000
 EXPOSE 8000
-CMD ["uvicorn","./Servingstats.main:app"]
+CMD ["uvicorn", "Servingstats.app.main:app", "--host", "0.0.0.0", "--port", "80"]
